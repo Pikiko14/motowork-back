@@ -155,11 +155,11 @@ const LoginValidator = [
       const existUser = await repository.getUserByUsername(username);
       // validate if user don't exist
       if (!existUser) {
-        throw new Error("Username don't exist in our records");
+        throw new Error("El usuario ingresado no existe.");
       }
       // validate if user is ! active
       if (existUser && !existUser.is_active) {
-        throw new Error("User is not active");
+        throw new Error("El usuario no se encuentra activo.");
       }
       return true;
     }),

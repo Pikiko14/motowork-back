@@ -107,13 +107,17 @@ class AuthService extends UserRepository {
           body.password,
         )
         if (comparePassword) {
-          const token = await this.utils.generateToken(user);
+          let time = "1d";
+          if (body.remember) {
+            time = "100d";
+          }
+          const token = await this.utils.generateToken(user, time);
           return ResponseHandler.successResponse(res, { user, token }, "Login correctly");
         } else {
-          throw new Error("Wrong password");
+          throw new Error("La contraseña es incorrecta.");
         }
       } else {
-        throw new Error("User not found");
+        throw new Error("El usuario ingresado no existe");
       }
     } catch (error: any) {
       throw error.message;

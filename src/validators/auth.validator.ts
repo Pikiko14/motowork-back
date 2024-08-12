@@ -178,6 +178,8 @@ const LoginValidator = [
     .withMessage(
       "Password must contain at least one special character like $, @, #, &, - or !"
     ),
+  check("remember")
+  .optional(),
   (req: Request, res: Response, next: NextFunction) =>
     handlerValidator(req, res, next),
 ];

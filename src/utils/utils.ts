@@ -33,9 +33,9 @@ class Utils {
    * @param {string} id
    * @param {string} name
    */
-  generateToken = async ({ name, scopes, _id, role, last_name, email }: User) => {
+  generateToken = async ({ name, scopes, _id, role, last_name, email }: User, time = "1d") => {
     const jwt = await sign({ _id, name, scopes, role, last_name, email }, this.JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: time,
     });
     return jwt;
   };

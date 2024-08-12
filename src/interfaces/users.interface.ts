@@ -24,4 +24,5 @@ export interface User extends LoginInterface {
   phone: string;
   document: string;
   review: number;
+  remember?: boolean;
 }

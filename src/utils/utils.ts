@@ -99,35 +99,9 @@ class Utils {
    * @param {string} path
    */
   getPath = async (path: string): Promise<string | undefined> => {
-    if (path.includes("catalogues")) {
-      await this.validateOrGeneratePath("catalogues");
-      return "catalogues";
-    }
-    if (path.includes("pdf")) {
-      await this.validateOrGeneratePath("pdfs");
-      return "pdfs";
-    }
-    if (path.includes("images")) {
-      await this.validateOrGeneratePath(path);
-      return path;
-    }
-    if (path.includes("pages")) {
-      await this.validateOrGeneratePath("images");
-      return "images";
-    }
-    if (path.includes("profile")) {
-      await this.validateOrGeneratePath("profile");
-      return "profile";
-    }
-    if (path.includes("products")) {
-      await this.validateOrGeneratePath("products");
-      return "products";
-    }
-    if (path.includes("categories")) {
-      await this.validateOrGeneratePath("categories");
-      return "categories";
-    }
-    return undefined;
+    const pathSplit = path.split('/').pop();
+    await this.validateOrGeneratePath(pathSplit || '');
+    return pathSplit;
   };
 
   validateOrGeneratePath = async (path: string): Promise<void> => {

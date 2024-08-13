@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import { BannersController } from "../controllers/banners.controller";
 
@@ -9,9 +10,14 @@ const router = Router();
 const controller = new BannersController();
 
 /**
- * Do creationg of banners
+ * Do creation of banners
  */
-router.post("/", sessionCheck, controller.createBanners);
+const uploadFields = upload.fields([
+  { name: "images_desktop", maxCount: 1 },
+  { name: "images_tablet", maxCount: 1 },
+  { name: "images_mobile", maxCount: 1 },
+]);
+router.post("/", sessionCheck, uploadFields, controller.createBanners);
 
 // export router
 export { router };

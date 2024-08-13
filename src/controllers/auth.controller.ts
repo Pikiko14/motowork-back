@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { matchedData } from 'express-validator';
-import { User } from "../interfaces/users.interface";
+import { User } from "../types/users.interface";
 import { AuthService } from "../services/auth.service";
 import { ResponseHandler } from "../utils/responseHandler";
 

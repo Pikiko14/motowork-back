@@ -1,6 +1,6 @@
 import amqp, { Channel, Connection } from "amqplib";
 import configuration from "../../configuration/configuration";
-import { MessageBrokerInterface } from "../interfaces/broker.interface";
+import { MessageBrokerInterface } from "../types/broker.interface";
 
 /**
  * Clase encargada de interactuar con el broker de mensajes RabbitMQ.

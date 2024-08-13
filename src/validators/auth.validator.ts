@@ -1,7 +1,7 @@
 import { Utils } from "../utils/utils";
 import { check } from "express-validator";
 import { scopesArray } from "../utils/array.scopes";
-import { UserRole } from "../interfaces/users.interface";
+import { UserRole } from "../types/users.interface";
 import { Request, Response, NextFunction } from "express";
 import UserRepository from "../repositories/user.repository";
 import { handlerValidator } from "../utils/handler.validator";

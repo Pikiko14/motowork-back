@@ -4,7 +4,7 @@ import {
   BannerImageInterface,
   BannersInterface,
   TypeImageBanner,
-} from "../interfaces/banners.interface";
+} from "../types/banners.interface";
 
 const BannerImageSchema = new Schema<BannerImageInterface>({
   path: {

@@ -2,7 +2,7 @@ import request from 'supertest';
 import { Server } from '../src/app'; // Asegúrate de exportar correctamente tu aplicación desde '../src/app'
 import { faker } from '@faker-js/faker';
 import { Utils } from "./../src/utils/utils";
-import { User } from "../src/interfaces/users.interface";
+import { User } from "../src/types/users.interface";
 
 describe("AuthService", () => {
   let utils: Utils;

@@ -15,11 +15,13 @@ export class BannersController {
    * @param res Express response
    * @returns Promise<void>
    */
-  createBanners = async(req: Request, res: Response) => {
+  createBanners = async (req: Request, res: Response) => {
     try {
-        res.send(req.body).status(200);
-      } catch (error: any) {
-        ResponseHandler.handleInternalError(res, error, error.message);
-      }
+      // get files
+      
+      res.send(req.body).status(200);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
   };
 }

@@ -1,7 +1,7 @@
 import { Utils } from "../utils/utils";
 import { NextFunction, Response } from "express";
 import { ResponseHandler } from "../utils/responseHandler";
-import { RequestExt } from "../interfaces/req-ext.interface";
+import { RequestExt } from "../types/req-ext.interface";
 
 // instances
 const utils = new Utils();

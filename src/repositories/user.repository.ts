@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 import UserModel from "../models/users.model";
-import { User } from "../interfaces/users.interface";
+import { User } from "../types/users.interface";
 
 class UserRepository {
   private readonly model: Model<User>;

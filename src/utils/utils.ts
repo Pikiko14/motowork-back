@@ -3,7 +3,7 @@ import * as crypto from "crypto";
 import * as bcrypt from "bcryptjs";
 import moment from "moment";
 import { sign, verify } from "jsonwebtoken";
-import { User } from "../interfaces/users.interface";
+import { User } from "../types/users.interface";
 import configuration from "../../configuration/configuration";
 
 class Utils {

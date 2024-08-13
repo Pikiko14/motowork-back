@@ -33,6 +33,11 @@ const BannersSchema = new Schema<BannersInterface>(
       enum: Object.values(TypeBanner), // Validación de tipo de banner
       required: true,
     },
+    is_active: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     images: [BannerImageSchema],
   },
   {

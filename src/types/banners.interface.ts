@@ -21,5 +21,6 @@ export interface BannersInterface {
   name: string;
   link: string;
   type: TypeBanner;
+  is_active: boolean;
   images: BannerImageInterface[];
 }

@@ -59,10 +59,15 @@ const BannersCreationValidator = [
     .custom(async (value: string) => {
       const types = Object.keys(TypeBanner);
       if (!types.includes(value)) {
-        throw new Error(`El link del banner debe ser una de las siguientes opciones: ${types.join(', ')}.`);
+        throw new Error(
+          `El link del banner debe ser una de las siguientes opciones: ${types.join(
+            ", "
+          )}.`
+        );
       }
       return true;
     }),
+  check("is_active").optional(),
   (req: Request, res: Response, next: NextFunction) =>
     handlerValidator(req, res, next),
 ];

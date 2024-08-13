@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import {
   TypeBanner,
   BannerImageInterface,
@@ -6,43 +6,42 @@ import {
   TypeImageBanner,
 } from "../interfaces/banners.interface";
 
+const BannerImageSchema = new Schema<BannerImageInterface>({
+  path: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: Object.values(TypeImageBanner), // Validación de tipo de imagen
+    required: true,
+  },
+});
+
 const BannersSchema = new Schema<BannersInterface>(
   {
     name: {
       type: String,
-      default: "",
       required: true,
     },
     link: {
       type: String,
-      default: "",
       required: true,
     },
     type: {
       type: String,
-      default: TypeBanner.home,
+      enum: Object.values(TypeBanner), // Validación de tipo de banner
       required: true,
     },
-    images: [
-      {
-        path: {
-          type: String,
-          default: "",
-          required: true,
-        },
-        type: {
-          type: String,
-          default: TypeImageBanner.desktop,
-          required: true,
-        },
-      },
-    ],
+    images: [BannerImageSchema],
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
+BannersSchema.index({ type: 1 }); // Índice para el campo type
 
 const BannersModel = model("banners", BannersSchema);
 

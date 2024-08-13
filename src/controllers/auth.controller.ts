@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ResponseHandler } from "../utils/responseHandler";
-import { AuthService } from "../services/auth.service";
-import { User } from "../interfaces/users.interface";
 import { matchedData } from 'express-validator';
+import { User } from "../interfaces/users.interface";
+import { AuthService } from "../services/auth.service";
+import { ResponseHandler } from "../utils/responseHandler";
 
 export class AuthController {
   public service;

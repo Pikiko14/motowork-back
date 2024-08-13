@@ -81,6 +81,8 @@ const BannerIdValidator = [
     .withMessage("El id del banner no puede estar vacio.")
     .isString()
     .withMessage("El id del banner debe ser una cadena de texto.")
+    .isMongoId()
+    .withMessage("El id del banner debe ser un id de mongo.")
     .custom(async (id: string) => {
       const banner = await BannersModel.findById(id);
       if (!banner) {

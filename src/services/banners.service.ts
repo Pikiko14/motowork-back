@@ -8,6 +8,7 @@ import {
 } from "../types/banners.interface";
 import BannersRepository from "../repositories/banners.repository";
 import { ResponseRequestInterface } from "../types/response.interface";
+import { PaginationInterface } from "../types/req-ext.interface";
 
 export class BannersService extends BannersRepository {
   private utils: Utils;
@@ -82,11 +83,41 @@ export class BannersService extends BannersRepository {
    * @param query query of list
    * @return { ResponseRequestInterface | void }
    */
-  public async listBanners(res: Response, query: any) {
+  public async listBanners(res: Response, query: PaginationInterface) {
     try {
+      // validamos la data de la paginacion
+      const page: number = query.page as number || 1;
+      const perPage: number = query.perPage as number || 12;
+      const skip = (page - 1) * perPage;
+
+      // Iniciar busqueda
+      let queryObj: any = {};
+      if (query.search) {
+        const searchRegex = new RegExp(query.search as string, 'i');
+        queryObj = {
+          $or: [
+            { name: searchRegex },
+            { link: searchRegex },
+            { type: searchRegex },
+          ],
+        };
+      }
+
+      // validate is active
+      if (query.is_active) {
+        queryObj.is_active = query.is_active;
+      }
+
+      // do query
+      const banners = await this.paginate(queryObj, skip, perPage);
+
+      // return data
       return ResponseHandler.successResponse(
         res,
-        query,
+        {
+          banners: banners.data,
+          totalItems: banners.totalItems
+        },
         "Banner creado correctamente."
       );
     } catch (error: any) {

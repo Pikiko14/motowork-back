@@ -18,7 +18,8 @@ export interface RequestExt extends Request {
 }
 
 export interface PaginationInterface {
-  page: string | number;
-  perPage: string | number;
+  page: number;
+  perPage: number;
   search: string | number;
+  is_active?: boolean;
 }

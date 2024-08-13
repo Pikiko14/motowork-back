@@ -1,6 +1,7 @@
 import { Model } from "mongoose";
 import BannersModel from "../models/banners.model";
 import { BannersInterface } from "../types/banners.interface";
+import { PaginationResponseInterface } from "../types/response.interface";
 
 class BannersRepository {
   private readonly model: Model<BannersInterface>;
@@ -16,6 +17,23 @@ class BannersRepository {
   public async create (user: BannersInterface): Promise<BannersInterface> {
     const banner = await this.model.create(user);
     return banner;
+  }
+
+  /**
+   * paginate Companys
+   * @param page
+   * @param skip
+   * @param search
+   */
+  public async paginate (query: any, skip: number, perPage: number): Promise<PaginationResponseInterface> {
+    const banners = await this.model.find(query)
+    .skip(skip)
+    .limit(perPage);
+    const totalCompanys = await this.model.find(query).countDocuments();
+    return {
+      data: banners,
+      totalItems: totalCompanys
+    }
   }
 }
 

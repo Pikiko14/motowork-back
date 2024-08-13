@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
-import { RequestExt } from "../types/req-ext.interface";
 import { ResponseHandler } from "../utils/responseHandler";
 import { BannersService } from "../services/banners.service";
 import { BannersInterface } from "../types/banners.interface";
 import { ResponseRequestInterface } from "../types/response.interface";
+import { PaginationInterface, RequestExt } from "../types/req-ext.interface";
 
 export class BannersController {
   public service;
@@ -57,7 +57,7 @@ export class BannersController {
    */
   listBanners = async (req: Request, res: Response) => {
     try {
-      const query = matchedData(req);
+      const query: PaginationInterface = matchedData(req) as PaginationInterface;
       await this.service.listBanners(res, query);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);

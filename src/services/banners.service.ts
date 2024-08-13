@@ -41,12 +41,16 @@ export class BannersService extends BannersRepository {
       const images: BannerImageInterface[] = [];
       const { imagesTablet, imagesDesktop, imagesMobile } = files;
       if (!imagesTablet || !imagesDesktop || !imagesMobile) {
-        throw new Error("Debes ingresar todas las imagenes necesarias del banner");
+        throw new Error(
+          "Debes ingresar todas las imagenes necesarias del banner"
+        );
       }
 
       // set images desktop
       images.push({
-        path: `${this.path}${imagesDesktop[0] ? imagesDesktop[0].filename : ""}`,
+        path: `${this.path}${
+          imagesDesktop[0] ? imagesDesktop[0].filename : ""
+        }`,
         type: TypeImageBanner.desktop,
       });
 
@@ -64,7 +68,9 @@ export class BannersService extends BannersRepository {
 
       // save images on banner
       body.images = images;
-      const banner: BannersInterface = await this.create(body) as BannersInterface;
+      const banner: BannersInterface = (await this.create(
+        body
+      )) as BannersInterface;
 
       // return response
       return ResponseHandler.createdResponse(
@@ -86,14 +92,14 @@ export class BannersService extends BannersRepository {
   public async listBanners(res: Response, query: PaginationInterface) {
     try {
       // validamos la data de la paginacion
-      const page: number = query.page as number || 1;
-      const perPage: number = query.perPage as number || 12;
+      const page: number = (query.page as number) || 1;
+      const perPage: number = (query.perPage as number) || 12;
       const skip = (page - 1) * perPage;
 
       // Iniciar busqueda
       let queryObj: any = {};
       if (query.search) {
-        const searchRegex = new RegExp(query.search as string, 'i');
+        const searchRegex = new RegExp(query.search as string, "i");
         queryObj = {
           $or: [
             { name: searchRegex },
@@ -116,7 +122,7 @@ export class BannersService extends BannersRepository {
         res,
         {
           banners: banners.data,
-          totalItems: banners.totalItems
+          totalItems: banners.totalItems,
         },
         "Listado de banners."
       );
@@ -144,7 +150,7 @@ export class BannersService extends BannersRepository {
     } catch (error: any) {
       throw new Error(error.message);
     }
-  }
+  };
 
   /**
    * Delete banner
@@ -165,5 +171,142 @@ export class BannersService extends BannersRepository {
     } catch (error: any) {
       throw new Error(error.message);
     }
-  }
+  };
+
+  /**
+   * Update banner
+   * @param { Response } res Express response
+   * @param { string } id Id banner to update
+   * @param { BannersInterface } body Data to update
+   * @returns Promise<void>
+   */
+  updateBanner = async (
+    res: Response,
+    id: string,
+    body: BannersInterface,
+    files: {
+      imagesTablet: Express.Multer.File[];
+      imagesMobile: Express.Multer.File[];
+      imagesDesktop: Express.Multer.File[];
+    }
+  ) => {
+    try {
+      // get banner by id
+      const banner = await this.getById(id);
+
+      // get preview images
+      const images: BannerImageInterface[] = banner?.images || [];
+
+      // validate files and process
+      const { imagesTablet, imagesDesktop, imagesMobile } = files;
+
+      // validate image desktop
+      if (imagesDesktop) {
+        // validate preview data
+        const previewImageDesktop = images.find(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.desktop;
+          }
+        );
+        const previewImageDesktopIndex = images.findIndex(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.desktop;
+          }
+        );
+
+        // delete preview data
+        if (previewImageDesktopIndex !== -1)
+          images.splice(previewImageDesktopIndex, 1);
+
+        // delete item from storage
+        if (previewImageDesktop)
+          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+
+        // set images desktop
+        images.push({
+          path: `${this.path}${
+            imagesDesktop[0] ? imagesDesktop[0].filename : ""
+          }`,
+          type: TypeImageBanner.desktop,
+        });
+      }
+
+      // validate image table
+      if (imagesTablet) {
+        // validate preview data
+        const previewImageDesktop = images.find(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.tablet;
+          }
+        );
+        const previewImageDesktopIndex = images.findIndex(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.tablet;
+          }
+        );
+
+        // delete preview data
+        if (previewImageDesktopIndex !== -1)
+          images.splice(previewImageDesktopIndex, 1);
+
+        // delete item from storage
+        if (previewImageDesktop)
+          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+
+        // set images desktop
+        images.push({
+          path: `${this.path}${
+            imagesTablet[0] ? imagesTablet[0].filename : ""
+          }`,
+          type: TypeImageBanner.tablet,
+        });
+      }
+
+      // validate image mobile
+      if (imagesMobile) {
+        // validate preview data
+        const previewImageDesktop = images.find(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.mobile;
+          }
+        );
+        const previewImageDesktopIndex = images.findIndex(
+          (item: BannerImageInterface) => {
+            return item.type === TypeImageBanner.mobile;
+          }
+        );
+
+        // delete preview data
+        if (previewImageDesktopIndex !== -1)
+          images.splice(previewImageDesktopIndex, 1);
+
+        // delete item from storage
+        if (previewImageDesktop)
+          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+
+        // set images desktop
+        images.push({
+          path: `${this.path}${
+            imagesMobile[0] ? imagesMobile[0].filename : ""
+          }`,
+          type: TypeImageBanner.mobile,
+        });
+      }
+
+      // set images
+      body.images = images;
+
+      // save data
+      const bannerData = await this.update(id, body);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        bannerData,
+        "Información del banner."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
 }

@@ -14,30 +14,32 @@ class BannersRepository {
    * Save banner in bbdd
    * @param user User
    */
-  public async create (user: BannersInterface): Promise<BannersInterface> {
+  public async create(user: BannersInterface): Promise<BannersInterface> {
     const banner = await this.model.create(user);
     return banner;
   }
 
   /**
-   * paginate Companys
+   * Paginate Companys
    * @param page
    * @param skip
    * @param search
    */
-  public async paginate (query: any, skip: number, perPage: number): Promise<PaginationResponseInterface> {
-    const banners = await this.model.find(query)
-    .skip(skip)
-    .limit(perPage);
+  public async paginate(
+    query: any,
+    skip: number,
+    perPage: number
+  ): Promise<PaginationResponseInterface> {
+    const banners = await this.model.find(query).skip(skip).limit(perPage);
     const totalCompanys = await this.model.find(query).countDocuments();
     return {
       data: banners,
-      totalItems: totalCompanys
-    }
+      totalItems: totalCompanys,
+    };
   }
 
   /**
-   * get banner by id
+   * Get banner by id
    * @param id
    */
   public async getById(id: string): Promise<BannersInterface | void | null> {
@@ -45,11 +47,23 @@ class BannersRepository {
   }
 
   /**
-   * delete banner by id
+   * Delete banner by id
    * @param id
    */
   public async delete(id: string): Promise<BannersInterface | void | null> {
     return this.model.findByIdAndDelete(id);
+  }
+
+  /**
+   * Update banner data
+   * @param id
+   * @param body
+   */
+  public async update(
+    id: string,
+    body: BannersInterface
+  ): Promise<BannersInterface | void | null> {
+    return await this.model.findByIdAndUpdate(id, body, { new: true });
   }
 }
 

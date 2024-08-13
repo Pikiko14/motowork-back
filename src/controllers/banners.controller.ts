@@ -57,12 +57,14 @@ export class BannersController {
    */
   listBanners = async (req: Request, res: Response) => {
     try {
-      const query: PaginationInterface = matchedData(req) as PaginationInterface;
+      const query: PaginationInterface = matchedData(
+        req
+      ) as PaginationInterface;
       await this.service.listBanners(res, query);
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
-  }
+  };
 
   /**
    * Show banner
@@ -77,7 +79,7 @@ export class BannersController {
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
-  }
+  };
 
   /**
    * Delete banner
@@ -92,5 +94,39 @@ export class BannersController {
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
-  }
+  };
+
+  /**
+   * Update banner
+   * @param { Request } req Express request
+   * @param { Response } res Express response
+   * @returns Promise<void>
+   */
+  updateBanner = async (req: RequestExt, res: Response) => {
+    try {
+      // get id and body
+      const { id } = req.params;
+      const body = matchedData(req) as BannersInterface;
+
+      // get files
+      const imagesTablet = req.files["images_tablet"]
+        ? req.files["images_tablet"]
+        : null;
+      const imagesMobile = req.files["images_mobile"]
+        ? req.files["images_mobile"]
+        : null;
+      const imagesDesktop = req.files["images_desktop"]
+        ? req.files["images_desktop"]
+        : null;
+
+      // do update data
+      await this.service.updateBanner(res, id, body, {
+        imagesTablet,
+        imagesDesktop,
+        imagesMobile,
+      });
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
+  };
 }

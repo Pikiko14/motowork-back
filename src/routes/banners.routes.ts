@@ -1,4 +1,5 @@
-import  { Router} from "express";
+import { Router } from "express";
+import sessionCheck from "../middlewares/sessions.middleware";
 import { BannersController } from "../controllers/banners.controller";
 
 // init router
@@ -10,7 +11,7 @@ const controller = new BannersController();
 /**
  * Do creationg of banners
  */
-router.post("/", controller.createBanners);
+router.post("/", sessionCheck, controller.createBanners);
 
 // export router
 export { router };

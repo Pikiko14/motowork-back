@@ -2,6 +2,7 @@ import { Router } from "express";
 import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import { BannersController } from "../controllers/banners.controller";
+import { BannersCreationValidator } from "../validators/banners.validator";
 
 // init router
 const router = Router();
@@ -17,7 +18,13 @@ const uploadFields = upload.fields([
   { name: "images_tablet", maxCount: 1 },
   { name: "images_mobile", maxCount: 1 },
 ]);
-router.post("/", sessionCheck, uploadFields, controller.createBanners);
+router.post(
+  "/",
+  sessionCheck,
+  uploadFields,
+  BannersCreationValidator,
+  controller.createBanners
+);
 
 // export router
 export { router };

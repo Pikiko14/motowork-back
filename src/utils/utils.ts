@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import * as crypto from "crypto";
 import * as bcrypt from "bcryptjs";
 import moment from "moment";
@@ -33,10 +34,17 @@ class Utils {
    * @param {string} id
    * @param {string} name
    */
-  generateToken = async ({ name, scopes, _id, role, last_name, email }: User, time = "1d") => {
-    const jwt = await sign({ _id, name, scopes, role, last_name, email }, this.JWT_SECRET, {
-      expiresIn: time,
-    });
+  generateToken = async (
+    { name, scopes, _id, role, last_name, email }: User,
+    time = "1d"
+  ) => {
+    const jwt = await sign(
+      { _id, name, scopes, role, last_name, email },
+      this.JWT_SECRET,
+      {
+        expiresIn: time,
+      }
+    );
     return jwt;
   };
 
@@ -99,8 +107,8 @@ class Utils {
    * @param {string} path
    */
   getPath = async (path: string): Promise<string | undefined> => {
-    const pathSplit = path.split('/').pop();
-    await this.validateOrGeneratePath(pathSplit || '');
+    const pathSplit = path.split("/").pop();
+    await this.validateOrGeneratePath(pathSplit || "");
     return pathSplit;
   };
 
@@ -179,6 +187,16 @@ class Utils {
       expiresIn: "30m",
     });
     return jwt;
+  };
+
+  /**
+   * get relative path
+   * @param { string } filePath
+   */
+  getRelativePth = async (filePath: string): Promise<string> => {
+    const baseDir = path.resolve("uploads");
+    const relativePath = path.relative(baseDir, filePath);
+    return relativePath;
   };
 }
 

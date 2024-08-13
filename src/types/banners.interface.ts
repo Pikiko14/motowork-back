@@ -12,7 +12,7 @@ export enum TypeImageBanner {
 }
 
 export interface BannerImageInterface {
-  _id: string;
+  _id?: string;
   path: string;
   type: TypeImageBanner;
 }

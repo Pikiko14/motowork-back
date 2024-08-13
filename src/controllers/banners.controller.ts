@@ -1,14 +1,16 @@
 import { Request, Response } from "express";
-import { ResponseHandler } from "../utils/responseHandler";
 import { matchedData } from "express-validator";
 import { RequestExt } from "../types/req-ext.interface";
+import { ResponseHandler } from "../utils/responseHandler";
+import { BannersService } from "../services/banners.service";
 import { BannersInterface } from "../types/banners.interface";
+import { ResponseRequestInterface } from "../types/response.interface";
 
 export class BannersController {
   public service;
 
   constructor() {
-    this.service = "";
+    this.service = new BannersService();
   }
 
   /**
@@ -17,18 +19,31 @@ export class BannersController {
    * @param res Express response
    * @returns Promise<void>
    */
-  createBanners = async (req: RequestExt, res: Response) => {
+  createBanners = async (
+    req: RequestExt,
+    res: Response
+  ): Promise<void | ResponseRequestInterface> => {
     try {
       // get files
-      const imagesTablet = req.files['images_tablet'] ? req.files['images_tablet'] : null;
-      const imagesMobile = req.files['images_mobile'] ? req.files['images_mobile'] : null;
-      const imagesDesktop = req.files['images_desktop'] ? req.files['images_desktop'] : null;
+      const imagesTablet = req.files["images_tablet"]
+        ? req.files["images_tablet"]
+        : null;
+      const imagesMobile = req.files["images_mobile"]
+        ? req.files["images_mobile"]
+        : null;
+      const imagesDesktop = req.files["images_desktop"]
+        ? req.files["images_desktop"]
+        : null;
 
       // get body sanitize
       const body: BannersInterface = matchedData(req) as BannersInterface;
 
       // return response
-      res.send(req.body).status(200);
+      await this.service.createBanners(res, body, {
+        imagesTablet,
+        imagesDesktop,
+        imagesMobile,
+      });
     } catch (error: any) {
       ResponseHandler.handleInternalError(res, error, error.message);
     }

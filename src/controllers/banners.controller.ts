@@ -48,4 +48,19 @@ export class BannersController {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
   };
+
+  /**
+   * List banners
+   * @param { Request } req Express request
+   * @param { Response } res Express response
+   * @returns Promise<void>
+   */
+  listBanners = async (req: Request, res: Response) => {
+    try {
+      const query = matchedData(req);
+      await this.service.listBanners(res, query);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
+  }
 }

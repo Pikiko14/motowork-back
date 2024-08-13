@@ -16,3 +16,9 @@ export interface RequestExt extends Request {
   user?: JwtPayload | { id: string, scopes: string[] } | User | any;
   files?: any
 }
+
+export interface PaginationInterface {
+  page: string | number;
+  perPage: string | number;
+  search: string | number;
+}

@@ -21,9 +21,9 @@ export class BannersService extends BannersRepository {
 
   /**
    * create new banners
-   * @param { Response } res
-   * @param { BannersInterface } body
-   * @param { any } files
+   * @param { Response } res Express response
+   * @param { BannersInterface } body body request
+   * @param { any } files array of files uploaded
    * @return { ResponseRequestInterface }
    */
   public async createBanners(
@@ -66,13 +66,31 @@ export class BannersService extends BannersRepository {
       const banner: BannersInterface = await this.create(body) as BannersInterface;
 
       // return response
-      return ResponseHandler.successResponse(
+      return ResponseHandler.createdResponse(
         res,
         banner,
         "Banner creado correctamente."
       );
     } catch (error: any) {
       throw error.message;
+    }
+  }
+
+  /**
+   * List banners
+   * @param { Response } res
+   * @param query query of list
+   * @return { ResponseRequestInterface | void }
+   */
+  public async listBanners(res: Response, query: any) {
+    try {
+      return ResponseHandler.successResponse(
+        res,
+        query,
+        "Banner creado correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   }
 }

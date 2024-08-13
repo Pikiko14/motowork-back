@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
+import { PaginationValidator } from "../validators/request.validator";
 import { BannersController } from "../controllers/banners.controller";
 import { BannersCreationValidator } from "../validators/banners.validator";
 
@@ -25,6 +26,11 @@ router.post(
   BannersCreationValidator,
   controller.createBanners
 );
+
+/**
+ * Return list of banners banners
+ */
+router.get('/', sessionCheck, PaginationValidator, controller.listBanners);
 
 // export router
 export { router };

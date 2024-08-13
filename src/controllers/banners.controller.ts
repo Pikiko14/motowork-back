@@ -78,4 +78,19 @@ export class BannersController {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
   }
+
+  /**
+   * Delete banner
+   * @param { Request } req Express request
+   * @param { Response } res Express response
+   * @returns Promise<void>
+   */
+  deleteBanner = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      await this.service.deleteBanner(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
+  }
 }

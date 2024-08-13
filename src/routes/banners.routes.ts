@@ -37,5 +37,10 @@ router.get('/', sessionCheck, PaginationValidator, controller.listBanners);
  */
 router.get('/:id', sessionCheck, BannerIdValidator, controller.showBanner);
 
+/**
+ * Delete banner data
+ */
+router.delete('/:id', sessionCheck, BannerIdValidator, controller.deleteBanner);
+
 // export router
 export { router };

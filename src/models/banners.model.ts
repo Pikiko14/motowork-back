@@ -5,6 +5,9 @@ import {
   BannersInterface,
   TypeImageBanner,
 } from "../types/banners.interface";
+import { Utils } from "../utils/utils";
+
+const utils = new Utils();
 
 const BannerImageSchema = new Schema<BannerImageInterface>({
   path: {
@@ -47,6 +50,25 @@ const BannersSchema = new Schema<BannersInterface>(
 );
 
 BannersSchema.index({ type: 1 }); // Índice para el campo type
+
+// Middleware para eliminar imágenes antes de borrar un documento
+BannersSchema.pre(
+  "findOneAndDelete",
+  { document: true, query: true },
+  async function (next: any) {
+    const banner: BannersInterface = await this.model
+      .findOne(this.getQuery())
+      .exec();
+    try {
+      for (const image of banner.images) {
+        await utils.deleteItemFromStorage(image.path);
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 const BannersModel = model("banners", BannersSchema);
 

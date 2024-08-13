@@ -43,6 +43,14 @@ class BannersRepository {
   public async getById(id: string): Promise<BannersInterface | void | null> {
     return this.model.findById(id);
   }
+
+  /**
+   * delete banner by id
+   * @param id
+   */
+  public async delete(id: string): Promise<BannersInterface | void | null> {
+    return this.model.findByIdAndDelete(id);
+  }
 }
 
 export default BannersRepository;

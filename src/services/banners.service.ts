@@ -145,4 +145,25 @@ export class BannersService extends BannersRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Delete banner
+   * @param { Response } res Express response
+   * @param { string } id
+   * @returns Promise<void>
+   */
+  deleteBanner = async (res: Response, id: string) => {
+    try {
+      const banner = await this.delete(id);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        banner,
+        "Información del banner."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

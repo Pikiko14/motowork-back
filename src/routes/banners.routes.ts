@@ -3,7 +3,7 @@ import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import { PaginationValidator } from "../validators/request.validator";
 import { BannersController } from "../controllers/banners.controller";
-import { BannersCreationValidator } from "../validators/banners.validator";
+import { BannerIdValidator, BannersCreationValidator } from "../validators/banners.validator";
 
 // init router
 const router = Router();
@@ -31,6 +31,11 @@ router.post(
  * Return list of banners banners
  */
 router.get('/', sessionCheck, PaginationValidator, controller.listBanners);
+
+/**
+ * Show banner data
+ */
+router.get('/:id', sessionCheck, BannerIdValidator, controller.showBanner);
 
 // export router
 export { router };

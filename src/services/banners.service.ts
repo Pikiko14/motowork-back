@@ -80,7 +80,7 @@ export class BannersService extends BannersRepository {
   /**
    * List banners
    * @param { Response } res
-   * @param query query of list
+   * @param { PaginationInterface } query query of list
    * @return { ResponseRequestInterface | void }
    */
   public async listBanners(res: Response, query: PaginationInterface) {
@@ -118,7 +118,28 @@ export class BannersService extends BannersRepository {
           banners: banners.data,
           totalItems: banners.totalItems
         },
-        "Banner creado correctamente."
+        "Listado de banners."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Show banner
+   * @param { Response } res Express response
+   * @param { string } id
+   * @returns Promise<void>
+   */
+  showBanner = async (res: Response, id: string) => {
+    try {
+      const banner = await this.getById(id);
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        banner,
+        "Información del banner."
       );
     } catch (error: any) {
       throw new Error(error.message);

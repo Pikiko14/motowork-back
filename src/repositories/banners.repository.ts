@@ -35,6 +35,14 @@ class BannersRepository {
       totalItems: totalCompanys
     }
   }
+
+  /**
+   * get banner by id
+   * @param id
+   */
+  public async getById(id: string): Promise<BannersInterface | void | null> {
+    return this.model.findById(id);
+  }
 }
 
 export default BannersRepository;

@@ -1,4 +1,5 @@
 import { check } from "express-validator";
+import BannersModel from "../models/banners.model";
 import { TypeBanner } from "../types/banners.interface";
 import { NextFunction, Request, Response } from "express";
 import { handlerValidator } from "../utils/handler.validator";
@@ -72,4 +73,23 @@ const BannersCreationValidator = [
     handlerValidator(req, res, next),
 ];
 
-export { BannersCreationValidator };
+const BannerIdValidator = [
+  check("id")
+    .exists()
+    .withMessage("El id del banner es requerido.")
+    .notEmpty()
+    .withMessage("El id del banner no puede estar vacio.")
+    .isString()
+    .withMessage("El id del banner debe ser una cadena de texto.")
+    .custom(async (id: string) => {
+      const banner = await BannersModel.findById(id);
+      if (!banner) {
+        throw new Error("El banner no existe");
+      }
+      return true;
+    }),
+  (req: Request, res: Response, next: NextFunction) =>
+    handlerValidator(req, res, next),
+];
+
+export { BannersCreationValidator, BannerIdValidator };

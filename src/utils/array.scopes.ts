@@ -3,4 +3,8 @@ export const scopesArray = [
   "list-products",
   "update-products",
   "delete-products",
+  "create-banners",
+  "list-banners",
+  "update-banners",
+  "delete-banners",
 ];

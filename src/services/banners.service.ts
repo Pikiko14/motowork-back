@@ -123,6 +123,7 @@ export class BannersService extends BannersRepository {
         {
           banners: banners.data,
           totalItems: banners.totalItems,
+          totalPages: banners.totalPages,
         },
         "Listado de banners."
       );

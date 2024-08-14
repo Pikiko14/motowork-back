@@ -36,7 +36,7 @@ router.post(
 /**
  * Return list of banners banners
  */
-router.get("/", sessionCheck, perMissionMiddleware('list-bannerss'), PaginationValidator, controller.listBanners);
+router.get("/", sessionCheck, perMissionMiddleware('list-banners'), PaginationValidator, controller.listBanners);
 
 /**
  * Show banner data

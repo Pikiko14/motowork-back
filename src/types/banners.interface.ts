@@ -3,6 +3,8 @@ export enum TypeBanner {
   news = "news",
   used = "used",
   experencie = "experience",
+  us = "us",
+  accesories = "accesories",
 }
 
 export enum TypeImageBanner {

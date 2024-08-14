@@ -1,6 +1,0 @@
-{"error":"Debes ingresar todas las imagenes necesarias del banner","level":"error","timestamp":"2024-08-13T19:51:40.253Z"}
-{"error":{},"level":"error","message":"Cast to Boolean failed for value \"01\" (type string) at path \"is_active\" for model \"banners\"","timestamp":"2024-08-13T20:23:53.124Z"}
-{"error":{},"level":"error","message":"Cast to Boolean failed for value \"/01/i\" (type RegExp) at path \"is_active\" for model \"banners\"","timestamp":"2024-08-13T20:24:29.038Z"}
-{"error":{},"level":"error","message":"Cast to Boolean failed for value \"/'01'/i\" (type RegExp) at path \"is_active\" for model \"banners\"","timestamp":"2024-08-13T20:24:37.532Z"}
-{"error":{},"level":"error","message":"Cast to Boolean failed for value \"/hola/i\" (type RegExp) at path \"is_active\" for model \"banners\"","timestamp":"2024-08-13T20:24:43.092Z"}
-{"error":"Debes ingresar todas las imagenes necesarias del banner","level":"error","timestamp":"2024-08-14T16:03:09.037Z"}

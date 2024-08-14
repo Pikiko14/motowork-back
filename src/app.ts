@@ -22,6 +22,8 @@ export class Server {
   private readonly PORT: number | string;
   /** The path to the route directory */
   private readonly routeDirectoryPath: string;
+  /**The public path route */
+  private readonly publicDirectoryPath: string
 
   /**
    * Creates a new instance of the server
@@ -31,6 +33,7 @@ export class Server {
     // this.setupMessageBroker();
     this.PORT = parseInt(configuration.get('PORT')) || 3000; // Default port
     this.routeDirectoryPath = path.join(__dirname, './routes'); // Path to your routes directory
+    this.publicDirectoryPath = path.join(__dirname, '../uploads'); // Path to your public directory
   }
 
   /**
@@ -45,6 +48,7 @@ export class Server {
     };
     this.app.use(express.json());
     this.app.use(cors(corsOptions));
+    this.app.use(express.static(this.publicDirectoryPath));
     this.loadRoutes();
   }
 

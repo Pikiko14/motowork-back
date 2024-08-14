@@ -42,7 +42,7 @@ export class BannersService extends BannersRepository {
       const { imagesTablet, imagesDesktop, imagesMobile } = files;
       if (!imagesTablet || !imagesDesktop || !imagesMobile) {
         throw new Error(
-          "Debes ingresar todas las imagenes necesarias del banner"
+          "Debes ingresar todas las imagenes necesarias del banner: (images_tablet, images_mobile, images_desktop)"
         );
       }
 

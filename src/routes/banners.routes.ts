@@ -7,6 +7,7 @@ import {
   BannerIdValidator,
   BannersCreationValidator,
 } from "../validators/banners.validator";
+import perMissionMiddleware from "../middlewares/permission.middleware";
 
 // init router
 const router = Router();
@@ -35,7 +36,7 @@ router.post(
 /**
  * Return list of banners banners
  */
-router.get("/", sessionCheck, PaginationValidator, controller.listBanners);
+router.get("/", sessionCheck, perMissionMiddleware('list-bannerss'), PaginationValidator, controller.listBanners);
 
 /**
  * Show banner data

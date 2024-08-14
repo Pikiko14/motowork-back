@@ -7,5 +7,6 @@ export interface ResponseRequestInterface {
 
 export interface PaginationResponseInterface {
   data: any;
+  totalPages?: number;
   totalItems: number;
 }

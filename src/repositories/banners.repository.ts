@@ -32,8 +32,10 @@ class BannersRepository {
   ): Promise<PaginationResponseInterface> {
     const banners = await this.model.find(query).skip(skip).limit(perPage);
     const totalCompanys = await this.model.find(query).countDocuments();
+    const totalPages = Math.ceil(totalCompanys / perPage);
     return {
       data: banners,
+      totalPages,
       totalItems: totalCompanys,
     };
   }

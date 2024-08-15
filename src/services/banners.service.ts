@@ -170,7 +170,7 @@ export class BannersService extends BannersRepository {
       return ResponseHandler.successResponse(
         res,
         banner,
-        "Información del banner."
+        "Banner eliminado correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);

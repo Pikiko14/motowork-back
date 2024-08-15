@@ -310,7 +310,7 @@ export class BannersService extends BannersRepository {
       return ResponseHandler.successResponse(
         res,
         bannerData,
-        "Información del banner."
+        "Banner modificado correctamente."
       );
     } catch (error: any) {
       throw new Error(error.message);

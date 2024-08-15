@@ -28,6 +28,7 @@ const uploadFields = upload.fields([
 router.post(
   "/",
   sessionCheck,
+  perMissionMiddleware("create-banners"),
   uploadFields,
   BannersCreationValidator,
   controller.createBanners
@@ -36,17 +37,35 @@ router.post(
 /**
  * Return list of banners banners
  */
-router.get("/", sessionCheck, perMissionMiddleware('list-banners'), PaginationValidator, controller.listBanners);
+router.get(
+  "/",
+  sessionCheck,
+  perMissionMiddleware("list-banners"),
+  PaginationValidator,
+  controller.listBanners
+);
 
 /**
  * Show banner data
  */
-router.get("/:id", sessionCheck, BannerIdValidator, controller.showBanner);
+router.get(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("list-banners"),
+  BannerIdValidator,
+  controller.showBanner
+);
 
 /**
  * Delete banner data
  */
-router.delete("/:id", sessionCheck, BannerIdValidator, controller.deleteBanner);
+router.delete(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("delete-banners"),
+  BannerIdValidator,
+  controller.deleteBanner
+);
 
 /**
  * Update banner data

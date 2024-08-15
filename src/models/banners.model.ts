@@ -70,6 +70,6 @@ BannersSchema.pre(
   }
 );
 
-const BannersModel = model("banners", BannersSchema);
+const BannersModel = model<BannersInterface>("banners", BannersSchema);
 
 export default BannersModel;

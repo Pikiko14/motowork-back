@@ -7,4 +7,8 @@ export const scopesArray = [
   "list-banners",
   "update-banners",
   "delete-banners",
+  "create-category",
+  "list-category",
+  "update-category",
+  "delete-category",
 ];

@@ -4,6 +4,7 @@ import sessionCheck from "../middlewares/sessions.middleware";
 import perMissionMiddleware from "../middlewares/permission.middleware";
 import { CategoriesController } from "../controllers/categories.controller";
 import { CategoriesCreationValidator } from "../validators/categories.validator";
+import { PaginationValidator } from "../validators/request.validator";
 
 // init router
 const router = Router();
@@ -21,6 +22,17 @@ router.post(
   upload.single("file"),
   CategoriesCreationValidator,
   controller.createCategories
+);
+
+/**
+ * Get categories
+ */
+router.get(
+  "/",
+  sessionCheck,
+  perMissionMiddleware("list-category"),
+  PaginationValidator,
+  controller.getCategories
 );
 
 // export router

@@ -37,4 +37,25 @@ export class CategoriesController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * Get categories
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  getCategories = async (
+    req: RequestExt,
+    res: Response
+  ): Promise<void | ResponseRequestInterface> => {
+    try {
+      // get query
+      const query = matchedData(req) as PaginationInterface;
+
+      // return data
+      return await this.service.getCategories(res, query);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

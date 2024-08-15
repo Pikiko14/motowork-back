@@ -45,7 +45,7 @@ export class BannersController {
         imagesMobile,
       });
     } catch (error: any) {
-      ResponseHandler.handleInternalError(res, error, error.message);
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
 

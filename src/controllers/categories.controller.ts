@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { ResponseHandler } from "../utils/responseHandler";
-import { BannersService } from "../services/banners.service";
+import { CategoriesService } from "../services/categories.service";
+import { CategoriesInterface } from "./../types/categories.interface";
 import { ResponseRequestInterface } from "../types/response.interface";
 import { PaginationInterface, RequestExt } from "../types/req-ext.interface";
 
@@ -9,7 +10,7 @@ export class CategoriesController {
   public service;
 
   constructor() {
-    this.service = new BannersService();
+    this.service = new CategoriesService();
   }
 
   /**
@@ -19,13 +20,21 @@ export class CategoriesController {
    * @returns Promise<void>
    */
   createCategories = async (
-    req: RequestExt,
+    req: Request,
     res: Response
   ): Promise<void | ResponseRequestInterface> => {
     try {
-        res.send({ hola: 'hola' }).status(200);
+      // get body
+      const body = matchedData(req) as CategoriesInterface;
+
+      // store category
+      return await this.service.createCategory(
+        res,
+        body,
+        req.file as Express.Multer.File
+      );
     } catch (error: any) {
-      ResponseHandler.handleInternalError(res, error, error.message);
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
 }

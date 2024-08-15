@@ -3,6 +3,7 @@ import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import perMissionMiddleware from "../middlewares/permission.middleware";
 import { CategoriesController } from "../controllers/categories.controller";
+import { CategoriesCreationValidator } from "../validators/categories.validator";
 
 // init router
 const router = Router();
@@ -18,6 +19,7 @@ router.post(
   sessionCheck,
   perMissionMiddleware("create-category"),
   upload.single("file"),
+  CategoriesCreationValidator,
   controller.createCategories
 );
 

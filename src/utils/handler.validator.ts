@@ -7,7 +7,7 @@ import { validationResult } from "express-validator";
 // instanciate all class neccesaries
 const utils = new Utils();
 
-export const handlerValidator = (
+export const handlerValidator = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -26,6 +26,10 @@ export const handlerValidator = (
           });
         }
       }
+    }
+    if (req.file) {
+      const path: string = await utils.getRelativePth(req.file.path);
+      await utils.deleteItemFromStorage(path);
     }
     return ResponseHandler.handleUnprocessableEntity(
       res,

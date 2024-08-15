@@ -15,6 +15,7 @@ declare global {
 export interface RequestExt extends Request {
   user?: JwtPayload | { id: string, scopes: string[] } | User | any;
   files?: any
+  file?: Express.Multer.File;
 }
 
 export interface PaginationInterface {

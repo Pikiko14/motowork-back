@@ -111,6 +111,9 @@ class Utils {
     if (path.includes('banners')) {
       pathSplit = "banners";
     }
+    if (path.includes('categories')) {
+      pathSplit = "categories";
+    }
     await this.validateOrGeneratePath(pathSplit || "");
     return pathSplit;
   };

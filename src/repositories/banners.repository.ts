@@ -67,6 +67,10 @@ class BannersRepository {
   ): Promise<BannersInterface | void | null> {
     return await this.model.findByIdAndUpdate(id, body, { new: true });
   }
+
+  public async findOneByQuery(query: any) {
+    return await this.model.findOne(query);
+  }
 }
 
 export default BannersRepository;

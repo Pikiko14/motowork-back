@@ -66,6 +66,9 @@ export class BannersService extends BannersRepository {
         type: TypeImageBanner.tablet,
       });
 
+      // validate if exist one banner active and desactivate by type
+      if (body.is_active) await this.disableIsActive(body.type);
+
       // save images on banner
       body.images = images;
       const banner: BannersInterface = (await this.create(
@@ -138,7 +141,7 @@ export class BannersService extends BannersRepository {
    * @param { string } id
    * @returns Promise<void>
    */
-  showBanner = async (res: Response, id: string) => {
+  public async showBanner(res: Response, id: string): Promise<void | ResponseRequestInterface> {
     try {
       const banner = await this.getById(id);
 
@@ -159,7 +162,7 @@ export class BannersService extends BannersRepository {
    * @param { string } id
    * @returns Promise<void>
    */
-  deleteBanner = async (res: Response, id: string) => {
+  public async deleteBanner(res: Response, id: string): Promise<void | ResponseRequestInterface> {
     try {
       const banner = await this.delete(id);
 
@@ -181,7 +184,7 @@ export class BannersService extends BannersRepository {
    * @param { BannersInterface } body Data to update
    * @returns Promise<void>
    */
-  updateBanner = async (
+  public async updateBanner(
     res: Response,
     id: string,
     body: BannersInterface,
@@ -190,7 +193,7 @@ export class BannersService extends BannersRepository {
       imagesMobile: Express.Multer.File[];
       imagesDesktop: Express.Multer.File[];
     }
-  ) => {
+  ): Promise<void | ResponseRequestInterface> {
     try {
       // get banner by id
       const banner = await this.getById(id);
@@ -294,6 +297,9 @@ export class BannersService extends BannersRepository {
         });
       }
 
+      // validate if exist one banner active and desactivate by type
+      if (body.is_active) await this.disableIsActive(body.type);
+
       // set images
       body.images = images;
 
@@ -310,4 +316,20 @@ export class BannersService extends BannersRepository {
       throw new Error(error.message);
     }
   };
+
+  /**
+   * Disable is_active
+   * @param { string } type
+   */
+  public async disableIsActive(type: string): Promise<void> {
+    try {
+      const banner = await this.findOneByQuery({ type, is_active: true });
+      if (banner) {
+        banner.is_active = false;
+        await banner.save();
+      }
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

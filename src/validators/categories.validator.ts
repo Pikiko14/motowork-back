@@ -55,4 +55,25 @@ const CategoriesCreationValidator = [
     handlerValidator(req, res, next),
 ];
 
-export { CategoriesCreationValidator };
+const CategoryIdValidator = [
+  check("id")
+    .exists()
+    .withMessage("El id de la categoría es requerido.")
+    .notEmpty()
+    .withMessage("El id de la categoría no puede estar vacio.")
+    .isString()
+    .withMessage("El id de la categoría debe ser una cadena de texto.")
+    .isMongoId()
+    .withMessage("El id de la categoría debe ser un id de mongo.")
+    .custom(async (id: string) => {
+      const category = await CategoriesModel.findById(id);
+      if (!category) {
+        throw new Error("El categoría no existe");
+      }
+      return true;
+    }),
+  (req: Request, res: Response, next: NextFunction) =>
+    handlerValidator(req, res, next),
+];
+
+export { CategoriesCreationValidator, CategoryIdValidator };

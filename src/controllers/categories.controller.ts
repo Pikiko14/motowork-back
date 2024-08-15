@@ -58,4 +58,46 @@ export class CategoriesController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * Get categories
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  showCategory = async (
+    req: RequestExt,
+    res: Response
+  ): Promise<void | ResponseRequestInterface> => {
+    try {
+      // get query
+      const { id } = req.params;
+
+      // return data
+      return await this.service.showCategory(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
+
+  /**
+   * Delete categories
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  deleteCategory = async (
+    req: RequestExt,
+    res: Response
+  ): Promise<void | ResponseRequestInterface> => {
+    try {
+      // get query
+      const { id } = req.params;
+
+      // return data
+      return await this.service.deleteCategory(res, id);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

@@ -60,6 +60,14 @@ class CategoriesRepository {
       totalItems: totalCategories,
     };
   }
+
+  /**
+   * Delete category by id
+   * @param id
+   */
+  public async delete(id: string): Promise<CategoriesInterface | void | null> {
+    return this.model.findByIdAndDelete(id);
+  }
 }
 
 export default CategoriesRepository;

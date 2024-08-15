@@ -90,6 +90,58 @@ export class CategoriesService extends CategoriesRepository {
           totalItems: banners.totalItems,
           totalPages: banners.totalPages,
         },
+        "Listado de categorías."
+      );
+
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Show categories
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @return { Promise<void | ResponseRequestInterface> }
+   */
+  public async showCategory(
+    res: Response,
+    id: string
+  ): Promise<void | ResponseHandler> {
+    try {
+      // get category
+      const category = await this.findOneByQuery({ _id: id });
+
+      // return data
+      return ResponseHandler.successResponse(
+        res,
+        category,
+        "Información de la categoría."
+      );
+
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  /**
+   * Delete categories
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @return { Promise<void | ResponseRequestInterface> }
+   */
+  public async deleteCategory(
+    res: Response,
+    id: string
+  ): Promise<void | ResponseHandler> {
+    try {
+      // get category
+      const category = await this.delete(id);
+
+      // return data
+      return ResponseHandler.successResponse(
+        res,
+        category,
         "Listado de banners."
       );
 

@@ -3,7 +3,7 @@ import { upload } from "../utils/storage";
 import sessionCheck from "../middlewares/sessions.middleware";
 import perMissionMiddleware from "../middlewares/permission.middleware";
 import { CategoriesController } from "../controllers/categories.controller";
-import { CategoriesCreationValidator } from "../validators/categories.validator";
+import { CategoriesCreationValidator, CategoryIdValidator } from "../validators/categories.validator";
 import { PaginationValidator } from "../validators/request.validator";
 
 // init router
@@ -33,6 +33,28 @@ router.get(
   perMissionMiddleware("list-category"),
   PaginationValidator,
   controller.getCategories
+);
+
+/**
+ * Show categories
+ */
+router.get(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("list-category"),
+  CategoryIdValidator,
+  controller.showCategory
+);
+
+/**
+ * Delete categories
+ */
+router.delete(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("delete-category"),
+  CategoryIdValidator,
+  controller.deleteCategory
 );
 
 // export router

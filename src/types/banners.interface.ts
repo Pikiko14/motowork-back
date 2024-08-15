@@ -23,6 +23,6 @@ export interface BannersInterface {
   name: string;
   link: string;
   type: TypeBanner;
-  is_active: boolean;
+  is_active: boolean | string;
   images: BannerImageInterface[];
 }

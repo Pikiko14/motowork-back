@@ -16,7 +16,9 @@ const CategoriesCreationValidator = [
     .withMessage(
       "El nombre del categoría debe tener entre 1 y máximo 90 caracteres."
     )
-    .custom(async (value: string) => {
+    .custom(async (value: string, { req }) => {
+      const { id } = req.params as any; // get param user to edit
+
       // validate if value is valid with regex
       const isValidValue = /^[a-zA-Z0-9 ]+$/.test(value);
       if (!isValidValue) {
@@ -29,7 +31,7 @@ const CategoriesCreationValidator = [
       const category = await CategoriesModel.findOne({
         name: value,
       });
-      if (category) {
+      if (category && category.id !== id) {
         throw new Error("La categoría ya existe");
       }
       return true;

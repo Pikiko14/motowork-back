@@ -4,3 +4,6 @@
 {"error":{},"level":"error","message":"Debe subir una imágen a la categoria.","timestamp":"2024-08-15T17:22:33.757Z"}
 {"error":"Debes ingresar todas las imagenes necesarias del banner: (images_tablet, images_mobile, images_desktop)","level":"error","timestamp":"2024-08-15T17:24:09.787Z"}
 {"error":"Debes ingresar todas las imagenes necesarias del banner: (images_tablet, images_mobile, images_desktop)","level":"error","message":"Debes ingresar todas las imagenes necesarias del banner: (images_tablet, images_mobile, images_desktop)","timestamp":"2024-08-15T17:24:49.760Z"}
+{"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:33:24.723Z"}
+{"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:33:38.849Z"}
+{"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:34:33.068Z"}

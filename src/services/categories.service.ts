@@ -149,4 +149,38 @@ export class CategoriesService extends CategoriesRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Create category
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @param { CategoriesInterface } body CategoriesInterface
+   * @param { Express.Multer.File } file Express.Multer.File
+   */
+  public async updateCategories(
+    res: Response,
+    id: string,
+    body: CategoriesInterface,
+    file: Express.Multer.File
+  ) {
+    try {
+      // validate file
+      const category = await this.update(id, body) as CategoriesInterface;
+
+      // set file
+      if (file) {
+        category.icon = `${this.path}${file ? file.filename : ""}`;
+        await this.update(category._id, category);
+      }
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        category,
+        "Categoría modificada correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

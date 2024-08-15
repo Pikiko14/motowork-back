@@ -57,5 +57,18 @@ router.delete(
   controller.deleteCategory
 );
 
+/**
+ * Update categories
+ */
+router.put(
+  "/:id",
+  sessionCheck,
+  perMissionMiddleware("update-category"),
+  CategoryIdValidator,
+  upload.single("file"),
+  CategoriesCreationValidator,
+  controller.updateCategories
+);
+
 // export router
 export { router };

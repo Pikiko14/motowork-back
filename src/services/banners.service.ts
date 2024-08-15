@@ -298,7 +298,7 @@ export class BannersService extends BannersRepository {
       }
 
       // validate if exist one banner active and desactivate by type
-      if (body.is_active && body?.is_active === true || body?.is_active === "true") await this.disableIsActive(body.type);
+      if (body.is_active && body.is_active === 'true' || body.is_active === "true") await this.disableIsActive(body.type);
 
       // set images
       body.images = images;

@@ -35,7 +35,7 @@ class RoutesIndex {
    */
   public async loadRoutes(): Promise<void> {
     readdirSync(this.PATH_ROUTER).filter((fileName) => {
-      if (fileName !== "index.ts") {
+      if (fileName !== "index.ts" && fileName !== "index.js") {
         const nameFile = this.utils.splitFile(fileName, ".");
         import(`./${nameFile}.routes`).then((moduleRouter) => {
           console.log(`Loading ${nameFile} routers`);

@@ -41,7 +41,7 @@ export class Server {
    */
   private configureMiddleware(): void {
     const corsOptions: CorsOptions = {
-      origin: ['http://localhost:9000', 'http://localhost:9200'],
+      origin: ['http://localhost:9000', 'http://localhost:9200', "https://app.motowork.xyz/"],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
       optionsSuccessStatus: 204,

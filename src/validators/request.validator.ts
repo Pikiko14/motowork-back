@@ -25,6 +25,8 @@ const PaginationValidator = [
     }),
   check("search")
     .optional(),
+  check("type")
+    .optional(),
   check("is_active")
     .optional(),
   (req: Request, res: Response, next: NextFunction) =>

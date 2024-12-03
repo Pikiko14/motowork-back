@@ -79,6 +79,12 @@ export class CategoriesService extends CategoriesRepository {
         queryObj.is_active = query.is_active;
       }
 
+      // type category
+      console.log(query);
+      if (query.type) {
+        queryObj.type = query.type;
+      }
+
       // do query
       const banners = await this.paginate(queryObj, skip, perPage);
 
@@ -86,7 +92,7 @@ export class CategoriesService extends CategoriesRepository {
       return ResponseHandler.successResponse(
         res,
         {
-          banners: banners.data,
+          categories: banners.data,
           totalItems: banners.totalItems,
           totalPages: banners.totalPages,
         },

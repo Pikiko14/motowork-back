@@ -23,4 +23,5 @@ export interface PaginationInterface {
   perPage: number;
   search: string | number;
   is_active?: boolean;
+  type?: string;
 }

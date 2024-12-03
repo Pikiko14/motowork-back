@@ -4,6 +4,8 @@ export interface CategoriesInterface {
   icon: string;
   is_active?: boolean;
   type: TypeCategory;
+  count_news?: number;
+  count_used?: number;
 }
 
 export enum TypeCategory {

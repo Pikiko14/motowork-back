@@ -7,3 +7,5 @@
 {"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:33:24.723Z"}
 {"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:33:38.849Z"}
 {"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-08-15T19:34:33.068Z"}
+{"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-12-03T23:24:35.381Z"}
+{"error":{},"level":"error","message":"EPERM: operation not permitted, unlink 'C:\\trabajo\\app\\motowork-back/uploads//'","timestamp":"2024-12-03T23:24:45.621Z"}

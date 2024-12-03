@@ -46,7 +46,9 @@ CategoriesSchema.pre(
       .findOne(this.getQuery())
       .exec();
     try {
-      await utils.deleteItemFromStorage(category.icon);
+      if (category.icon) {
+        await utils.deleteItemFromStorage(category.icon);
+      }
       next();
     } catch (error) {
       next(error);

@@ -181,6 +181,12 @@ export class CategoriesService extends CategoriesRepository {
 
       // set file
       if (file) {
+        // delete old icon
+        if (category.icon) {
+          await this.utils.deleteItemFromStorage(category.icon);
+        }
+
+        // save new icon
         category.icon = `${this.path}${file ? file.filename : ""}`;
         await this.update(category._id, category);
       }

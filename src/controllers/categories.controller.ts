@@ -129,4 +129,28 @@ export class CategoriesController {
       ResponseHandler.handleInternalError(res, error, error.message ?? error);
     }
   };
+
+  /**
+   * Change status categories
+   * @param req Express request
+   * @param res Express response
+   * @returns Promise<void>
+   */
+  changeCategoryStatus = async (
+    req: Request,
+    res: Response
+  ): Promise<void | ResponseRequestInterface> => {
+    try {
+      // get category params id
+      const { id } = req.params;
+
+      // store category
+      return await this.service.changeCategoryStatus(
+        res,
+        id,
+      );
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message ?? error);
+    }
+  };
 }

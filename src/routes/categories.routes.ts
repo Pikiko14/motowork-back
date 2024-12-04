@@ -70,5 +70,16 @@ router.put(
   controller.updateCategories
 );
 
+/**
+ * Update categories
+ */
+router.put(
+  "/:id/change-status",
+  sessionCheck,
+  perMissionMiddleware("update-category"),
+  CategoryIdValidator,
+  controller.changeCategoryStatus
+);
+
 // export router
 export { router };

@@ -194,4 +194,36 @@ export class CategoriesService extends CategoriesRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Create category
+   * @param { Response } res Express response
+   * @param { string } id query of list
+   * @param { CategoriesInterface } body CategoriesInterface
+   * @param { Express.Multer.File } file Express.Multer.File
+   */
+  public async changeCategoryStatus(
+    res: Response,
+    id: string
+  ) {
+    try {
+      // validate file
+      const category = await this.findOneByQuery({ _id: id });
+
+      // update status
+      if (category) {
+        category.is_active = !category.is_active;
+        await this.update(category._id, category);
+      }
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        category,
+        "Estado cambiado correctamente."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

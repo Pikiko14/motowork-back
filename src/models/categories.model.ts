@@ -37,6 +37,22 @@ const CategoriesSchema = new Schema<CategoriesInterface>(
 
 CategoriesSchema.index({ type: 1 }); // Índice para el campo type
 
+// propiedades virtuales para calcular los count_news
+CategoriesSchema.virtual("count_news").get(function () {
+  const count = 10;
+  return count;
+});
+
+
+CategoriesSchema.virtual("count_used").get(function () {
+  const count = 5; //await SomeOtherModel.countDocuments({ categoryId: this._id, condition: "used" })
+  return count;
+});
+
+
+CategoriesSchema.set("toObject", { virtuals: true });
+CategoriesSchema.set("toJSON", { virtuals: true });
+
 // Middleware para eliminar imágenes antes de borrar un documento
 CategoriesSchema.pre(
   "findOneAndDelete",

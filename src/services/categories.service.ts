@@ -85,22 +85,15 @@ export class CategoriesService extends CategoriesRepository {
       }
 
       // do query
-      const banners = await this.paginate(queryObj, skip, perPage);
-
-      // set count of items from products
-      banners.data = banners.data.map((item: CategoriesInterface) => {
-        item.count_news = 0;
-        item.count_used = 0;
-        return item;
-      });
+      const categories = await this.paginate(queryObj, skip, perPage);
 
       // return data
       return ResponseHandler.successResponse(
         res,
         {
-          categories: banners.data,
-          totalItems: banners.totalItems,
-          totalPages: banners.totalPages,
+          categories: categories.data,
+          totalItems: categories.totalItems,
+          totalPages: categories.totalPages,
         },
         "Listado de categorías."
       );

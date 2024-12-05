@@ -24,4 +24,6 @@ export interface PaginationInterface {
   search: string | number;
   is_active?: boolean;
   type?: string;
+  sortBy?: string;
+  order?: string;
 }

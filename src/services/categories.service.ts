@@ -85,7 +85,7 @@ export class CategoriesService extends CategoriesRepository {
       }
 
       // do query
-      const categories = await this.paginate(queryObj, skip, perPage);
+      const categories = await this.paginate(queryObj, skip, perPage, query.sortBy, query.order);
 
       // return data
       return ResponseHandler.successResponse(
@@ -156,7 +156,7 @@ export class CategoriesService extends CategoriesRepository {
   }
 
   /**
-   * Create category
+   * Update category
    * @param { Response } res Express response
    * @param { string } id query of list
    * @param { CategoriesInterface } body CategoriesInterface
@@ -196,7 +196,7 @@ export class CategoriesService extends CategoriesRepository {
   }
 
   /**
-   * Create category
+   * Change category status
    * @param { Response } res Express response
    * @param { string } id query of list
    * @param { CategoriesInterface } body CategoriesInterface

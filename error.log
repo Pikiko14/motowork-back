@@ -12,3 +12,12 @@
 {"error":{},"level":"error","message":"Cannot read properties of null (reading 'icon')","timestamp":"2024-12-03T23:49:16.447Z"}
 {"error":{},"level":"error","message":"Cannot read properties of null (reading 'icon')","timestamp":"2024-12-03T23:50:10.941Z"}
 {"error":{},"level":"error","message":"Cannot set properties of null (setting 'icon')","timestamp":"2024-12-03T23:51:28.062Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, date","timestamp":"2024-12-05T18:38:38.828Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, date","timestamp":"2024-12-05T18:39:46.290Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:40:03.646Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:40:03.655Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:40:05.793Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:40:06.907Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:41:11.495Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:41:14.283Z"}
+{"error":{},"level":"error","message":"Pagination failed: Invalid sort field. Allowed fields are: name, createdAt","timestamp":"2024-12-05T18:41:16.000Z"}

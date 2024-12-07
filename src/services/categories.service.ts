@@ -32,6 +32,7 @@ export class CategoriesService extends CategoriesRepository {
 
       // set file
       if (file) {
+        console.log(file);
         category.icon = `${this.path}${file ? file.filename : ""}`;
         await this.update(category._id, category);
       }

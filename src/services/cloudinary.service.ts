@@ -6,17 +6,13 @@ import {
 
 import configuration from "../../configuration/configuration";
 
+cloudinary.config({
+  cloud_name: configuration.get("CLOUDINARY_CLOUD_NAME"),
+  api_key: configuration.get("CLOUDINARY_API_KEY"),
+  api_secret: configuration.get("CLOUDINARY_API_SECRET"),
+});
+
 export class CloudinaryService {
-  cloudinary: any;
-
-  constructor() {
-    this.cloudinary = cloudinary.config({
-      cloud_name: configuration.get("CLOUDINARY_CLOUD_NAME"),
-      api_key: configuration.get("CLOUDINARY_API_KEY"),
-      api_secret: configuration.get("CLOUDINARY_API_SECRET"),
-    });
-  }
-
   /**
    * Sube una imagen a Cloudinary.
    * @param fileBuffer - El buffer del archivo a subir.
@@ -28,7 +24,7 @@ export class CloudinaryService {
     folder: string = "categories"
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
-      this.cloudinary.uploader
+      cloudinary.uploader
         .upload_stream({ folder }, (error: any, result: any) => {
           if (error) return reject(error);
           resolve(result);

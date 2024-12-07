@@ -204,6 +204,15 @@ class Utils {
     const relativePath = path.relative(baseDir, filePath);
     return relativePath;
   };
+
+  /**
+   * generate bufer from file
+   * @param { string } path
+   */
+  generateBuffer = async (path: string): Promise<Buffer> => {
+    const buffer = await fs.readFileSync(path);
+    return buffer;
+  };
 }
 
 export { Utils };

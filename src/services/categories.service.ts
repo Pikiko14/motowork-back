@@ -1,18 +1,23 @@
 import { Response } from "express";
 import { Utils } from "../utils/utils";
+import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
+import { PaginationInterface } from "../types/req-ext.interface";
 import { CategoriesInterface } from "../types/categories.interface";
 import CategoriesRepository from "../repositories/categories.repository";
-import { PaginationInterface } from "../types/req-ext.interface";
 
 export class CategoriesService extends CategoriesRepository {
   private utils: Utils;
   public path: String;
+  public folder: string = "categories";
+  public cloudinaryService: CloudinaryService;
 
-  constructor() {
+  constructor(
+  ) {
     super();
     this.utils = new Utils();
     this.path = "/categories/";
+    this.cloudinaryService = new CloudinaryService();
   }
 
   /**
@@ -32,8 +37,10 @@ export class CategoriesService extends CategoriesRepository {
 
       // set file
       if (file) {
-        console.log(file);
-        category.icon = `${this.path}${file ? file.filename : ""}`;
+        const imgBuffer = await this.utils.generateBuffer(file.path);
+        const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
+        category.icon = fileResponse.secure_url;
+        await this.utils.deleteItemFromStorage(file.path);
         await this.update(category._id, category);
       }
 

@@ -14,4 +14,4 @@ RUN npm install -g nodemon ts-node
 EXPOSE 3075
 
 # Comando para iniciar la aplicación con hot-reload
-CMD ["nodemon", "src/app.ts"]
+CMD ["nodemon", "--legacy-watch", "src/app.ts"]

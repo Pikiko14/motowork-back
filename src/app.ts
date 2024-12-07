@@ -10,7 +10,6 @@ import Database from '../configuration/db';
 import express, { Application } from 'express';
 import messageBroker from './utils/messageBroker';
 import configuration from '../configuration/configuration';
-console.log(123);
 
 // Classes
 /**

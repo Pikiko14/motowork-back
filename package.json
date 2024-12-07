@@ -1,7 +1,7 @@
 {
   "name": "auth",
   "version": "1.0.0",
-  "description": "Auth microservices for delivery-ma",
+  "description": "Base microservices for motowork app.",
   "main": "src/app.ts",
   "scripts": {
     "test": "jest",

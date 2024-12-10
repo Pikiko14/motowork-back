@@ -20,7 +20,7 @@ const CategoriesCreationValidator = [
       const { id } = req.params as any; // get param user to edit
 
       // validate if value is valid with regex
-      const isValidValue = /^[a-zA-Z0-9 ]+$/.test(value);
+      const isValidValue = /^[a-zA-Z0-9 áéíóúÁÉÍÓÚñÑüÜ]+$/.test(value);
       if (!isValidValue) {
         throw new Error(
           "El nombre de la categoría solo puede tener letras y números"

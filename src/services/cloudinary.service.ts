@@ -48,7 +48,6 @@ export class CloudinaryService {
 
     const clearId = imageUrl.split(publicId);
     const publicIdCleared = clearId[1].substring(1).split('.')[0];
-    console.log(publicIdCleared);
 
     return new Promise((resolve, reject) => {
       const result = cloudinary.api.delete_resources([publicIdCleared], {

@@ -11,4 +11,8 @@ export const scopesArray = [
   "list-category",
   "update-category",
   "delete-category",
+  "create-brand",
+  "list-brand",
+  "update-brand",
+  "delete-brand",
 ];

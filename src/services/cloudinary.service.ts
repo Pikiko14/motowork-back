@@ -32,4 +32,41 @@ export class CloudinaryService {
         .end(fileBuffer);
     });
   }
+
+  /**
+   * Elimina una imagen de Cloudinary usando su URL.
+   * @param imageUrl - La URL completa de la imagen en Cloudinary.
+   * @returns Promesa con el resultado de la eliminación.
+   */
+  async deleteImageByUrl(imageUrl: string): Promise<any> {
+    // Extraer el public_id de la URL de Cloudinary
+    const publicId = this.extractPublicId(imageUrl);
+
+    if (!publicId) {
+      return false;
+    }
+
+    const clearId = imageUrl.split(publicId);
+    const publicIdCleared = clearId[1].substring(1).split('.')[0];
+    console.log(publicIdCleared);
+
+    return new Promise((resolve, reject) => {
+      const result = cloudinary.api.delete_resources([publicIdCleared], {
+        type: "upload",
+        resource_type: "image",
+      })
+      resolve(result);
+    })
+  }
+
+  /**
+   * Extrae el public_id de la URL de Cloudinary.
+   * @param url - La URL de la imagen de Cloudinary.
+   * @returns El public_id extraído.
+   */
+  private extractPublicId(url: string): string | null {
+    const regex = /upload\/([^\/?]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
 }

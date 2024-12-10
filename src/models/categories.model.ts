@@ -4,8 +4,10 @@ import {
   TypeCategory,
 } from "../types/categories.interface";
 import { Utils } from "../utils/utils";
+import { CloudinaryService } from "../services/cloudinary.service";
 
 const utils = new Utils();
+const cloudinaryService = new CloudinaryService();
 
 const CategoriesSchema = new Schema<CategoriesInterface>(
   {
@@ -63,7 +65,7 @@ CategoriesSchema.pre(
       .exec();
     try {
       if (category.icon) {
-        await utils.deleteItemFromStorage(category.icon);
+        await cloudinaryService.deleteImageByUrl(category.icon);
       }
       next();
     } catch (error) {

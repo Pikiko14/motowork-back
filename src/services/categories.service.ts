@@ -30,7 +30,7 @@ export class CategoriesService extends CategoriesRepository {
     res: Response,
     body: CategoriesInterface,
     file: Express.Multer.File
-  ) {
+  ): Promise<void | ResponseHandler> {
     try {
       // validate file
       const category = (await this.create(body)) as CategoriesInterface;
@@ -40,7 +40,7 @@ export class CategoriesService extends CategoriesRepository {
         const imgBuffer = await this.utils.generateBuffer(file.path);
         const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
         category.icon = fileResponse.secure_url;
-        await this.utils.deleteItemFromStorage(file.path);
+        await this.utils.deleteItemFromStorage(`${this.path}${file ? file.filename : ""}`);
         await this.update(category._id, category);
       }
 
@@ -155,7 +155,7 @@ export class CategoriesService extends CategoriesRepository {
       return ResponseHandler.successResponse(
         res,
         category,
-        "Listado de banners."
+        "Categoría eliminada correctamente."
       );
 
     } catch (error: any) {

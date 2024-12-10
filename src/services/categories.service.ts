@@ -184,11 +184,14 @@ export class CategoriesService extends CategoriesRepository {
       if (file) {
         // delete old icon
         if (category.icon) {
-          await this.utils.deleteItemFromStorage(category.icon);
+          await this.cloudinaryService.deleteImageByUrl(category.icon);
         }
+        const imgBuffer = await this.utils.generateBuffer(file.path);
+        const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
 
         // save new icon
-        category.icon = `${this.path}${file ? file.filename : ""}`;
+        category.icon = fileResponse.secure_url;
+        await this.utils.deleteItemFromStorage(`${this.path}${file ? file.filename : ""}`);
         await this.update(category._id, category);
       }
 

@@ -275,13 +275,13 @@ export class BannersService extends BannersRepository {
           { attempts: 3, backoff: 5000 }
         );
 
-        // set images desktop
+        // set images tablet
         images.push({
           path: `${this.path}${
             imagesTablet[0] ? imagesTablet[0].filename : ""
           }`,
           type: TypeImageBanner.tablet,
-          src: imagesDesktop[0] ? imagesDesktop[0].path : "",
+          src: imagesTablet[0] ? imagesTablet[0].path : "",
         });
       }
 
@@ -315,7 +315,7 @@ export class BannersService extends BannersRepository {
             imagesMobile[0] ? imagesMobile[0].filename : ""
           }`,
           type: TypeImageBanner.mobile,
-          src: imagesDesktop[0] ? imagesDesktop[0].path : "",
+          src: imagesMobile[0] ? imagesMobile[0].path : "",
         });
       }
 

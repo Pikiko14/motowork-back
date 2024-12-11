@@ -17,6 +17,7 @@ export interface BannerImageInterface {
   _id?: string;
   path: string;
   type: TypeImageBanner;
+  src?: string;
 }
 
 export interface BannersInterface {

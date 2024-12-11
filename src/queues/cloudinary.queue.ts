@@ -1,6 +1,7 @@
 import { Utils } from "../utils/utils";
 import Bull, { Job, Queue, QueueOptions } from "bull";
 import { CloudinaryService } from "../services/cloudinary.service";
+import BannersRepository from "../repositories/banners.repository";
 import CategoriesRepository from "../repositories/categories.repository";
 
 export class TaskQueue<T> {
@@ -44,10 +45,15 @@ export class TaskQueue<T> {
    * Lógica para manejar cada tarea
    */
   private async handleTask(job: Job<any>): Promise<void> {
+    let fileResponse = null;
+    let repository = null;
+    let entityBd = null;
+
+    // upload single file
     if (job.data.taskType === "uploadFile") {
       const { file, entity } = job.data.payload;
       const imgBuffer = await this.utils.generateBuffer(file.path);
-      const fileResponse = await this.cloudinaryService.uploadImage(
+      fileResponse = await this.cloudinaryService.uploadImage(
         imgBuffer,
         this.folder
       );
@@ -55,19 +61,58 @@ export class TaskQueue<T> {
       await this.utils.deleteItemFromStorage(
         `${this.path}${file ? file.filename : ""}`
       );
+      entityBd = entity;
+    }
+
+    // upload multiple files
+    if (job.data.taskType === "uploadMultipleFiles") {
+      const { entity, images } = job.data.payload;
+      const newImages = [];
+      for (const image of images) {
+        const imgBuffer = await this.utils.generateBuffer(image.src);
+        // delete local storage
+        await this.utils.deleteItemFromStorage(
+          `${image.path ? image.path : ""}`
+        );
+
+        // upload single
+        fileResponse = await this.cloudinaryService.uploadImage(
+          imgBuffer,
+          this.folder
+        );
+        image.path = fileResponse.secure_url;
+        newImages.push(image);
+      }
+      entity.images = newImages;
+      entityBd = entity;
+
+      // upload multiples
+      // fileResponse = await this.cloudinaryService.uploadMultipleFiles(bufferArray, this.folder);
+    }
+
+    // delete file
+    if (job.data.taskType === "deleteFile") {
+      const { icon } = job.data.payload;
+      fileResponse = await this.cloudinaryService.deleteImageByUrl(icon);
+    }
+
+    // save items in bbdd
+    if (entityBd) {
       // save result in our bbdd
-      let repository = null;
       switch (this.folder) {
         case "categories":
-            repository = new CategoriesRepository();
+          repository = new CategoriesRepository();
+          break;
+        
+        case 'banners':
+          repository = new BannersRepository();
           break;
       }
-      await repository?.update(entity._id, entity);
-    } else {
-      const { icon } = job.data.payload;
-      await this.cloudinaryService.deleteImageByUrl(icon);
+      await repository?.update(entityBd._id, entityBd);
+      entityBd = null;
+      repository = null;
     }
-    console.log(`Tarea procesada con datos:`, job.data);
+    console.log(`Tarea procesada con respuesta:`, fileResponse);
   }
 
   /**

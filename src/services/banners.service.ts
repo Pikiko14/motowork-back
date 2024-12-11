@@ -6,18 +6,21 @@ import {
   BannersInterface,
   TypeImageBanner,
 } from "../types/banners.interface";
+import { TaskQueue } from "../queues/cloudinary.queue";
 import BannersRepository from "../repositories/banners.repository";
 import { ResponseRequestInterface } from "../types/response.interface";
 import { PaginationInterface } from "../types/req-ext.interface";
 
 export class BannersService extends BannersRepository {
   private utils: Utils;
-  public path: String;
+  public path: string;
+  public queue: any;
 
   constructor() {
     super();
     this.path = "/banners/";
     this.utils = new Utils();
+    this.queue = new TaskQueue("cloudinary_base_microservice", "banners", this.path);
   }
 
   /**
@@ -52,18 +55,21 @@ export class BannersService extends BannersRepository {
           imagesDesktop[0] ? imagesDesktop[0].filename : ""
         }`,
         type: TypeImageBanner.desktop,
+        src: imagesDesktop[0] ? imagesDesktop[0].path : "",
       });
 
       // set image mobile
       images.push({
         path: `${this.path}${imagesMobile[0] ? imagesMobile[0].filename : ""}`,
         type: TypeImageBanner.mobile,
+        src: imagesMobile[0] ? imagesMobile[0].path : "",
       });
 
       // set image table
       images.push({
         path: `${this.path}${imagesTablet[0] ? imagesTablet[0].filename : ""}`,
         type: TypeImageBanner.tablet,
+        src: imagesTablet[0] ? imagesTablet[0].path : "",
       });
 
       // validate if exist one banner active and desactivate by type
@@ -74,6 +80,12 @@ export class BannersService extends BannersRepository {
       const banner: BannersInterface = (await this.create(
         body
       )) as BannersInterface;
+
+      // upload images to cloudinary
+      await this.queue.addJob(
+        { taskType: "uploadMultipleFiles", payload: { entity: banner, images } },
+        { attempts: 3, backoff: 5000 }
+      );
 
       // return response
       return ResponseHandler.createdResponse(

@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { Utils } from "../utils/utils";
 import { TaskQueue } from "../queues/cloudinary.queue";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
@@ -8,17 +7,14 @@ import { CategoriesInterface } from "../types/categories.interface";
 import CategoriesRepository from "../repositories/categories.repository";
 
 export class CategoriesService extends CategoriesRepository {
-  private utils: Utils;
   public path: string;
   public queue: any;
-  public folder: string = "categories";
   public cloudinaryService: CloudinaryService;
 
   constructor() {
     super();
-    this.utils = new Utils();
     this.path = "/categories/";
-    this.queue = new TaskQueue("cloudinary_base_microservice", this.folder, this.path);
+    this.queue = new TaskQueue("cloudinary_base_microservice", 'categories', this.path);
     this.cloudinaryService = new CloudinaryService();
   }
 

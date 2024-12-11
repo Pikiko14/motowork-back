@@ -21,7 +21,7 @@ export class CloudinaryService {
    */
   async uploadImage(
     fileBuffer: Buffer,
-    folder: string = "categories"
+    folder: string,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
       cloudinary.uploader
@@ -56,6 +56,29 @@ export class CloudinaryService {
       })
       resolve(result);
     })
+  }
+
+  /**
+   * Sube múltiples archivos a Cloudinary.
+   * @param fileBuffers - Array de Buffers de los archivos.
+   * @param folder - Carpeta en la que se guardarán las imágenes.
+   * @returns Promesa con las respuestas de la API de Cloudinary.
+   */
+  async uploadMultipleFiles(
+    fileBuffers: Buffer[],
+    folder: string
+  ): Promise<any[]> {
+    // Reutiliza uploadImage para manejar cada buffer individualmente
+    const uploadPromises = fileBuffers.map((fileBuffer) =>
+      this.uploadImage(fileBuffer, folder)
+    );
+
+    try {
+      const results = await Promise.all(uploadPromises); // Ejecuta las subidas en paralelo
+      return results;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**

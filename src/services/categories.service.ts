@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { Utils } from "../utils/utils";
+import { TaskQueue } from "../queues/cloudinary.queue";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
 import { PaginationInterface } from "../types/req-ext.interface";
@@ -8,15 +9,16 @@ import CategoriesRepository from "../repositories/categories.repository";
 
 export class CategoriesService extends CategoriesRepository {
   private utils: Utils;
-  public path: String;
+  public path: string;
+  public queue: any;
   public folder: string = "categories";
   public cloudinaryService: CloudinaryService;
 
-  constructor(
-  ) {
+  constructor() {
     super();
     this.utils = new Utils();
     this.path = "/categories/";
+    this.queue = new TaskQueue("cloudinary_base_microservice", this.folder, this.path);
     this.cloudinaryService = new CloudinaryService();
   }
 
@@ -37,11 +39,11 @@ export class CategoriesService extends CategoriesRepository {
 
       // set file
       if (file) {
-        const imgBuffer = await this.utils.generateBuffer(file.path);
-        const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
-        category.icon = fileResponse.secure_url;
-        await this.utils.deleteItemFromStorage(`${this.path}${file ? file.filename : ""}`);
-        await this.update(category._id, category);
+        // await this.update(category._id, category);
+        await this.queue.addJob(
+          { taskType: "uploadFile", payload: { file, entity: category } },
+          { attempts: 3, backoff: 5000 }
+        );
       }
 
       // return response
@@ -66,7 +68,7 @@ export class CategoriesService extends CategoriesRepository {
     query: PaginationInterface
   ): Promise<void | ResponseHandler> {
     try {
-        // validamos la data de la paginacion
+      // validamos la data de la paginacion
       const page: number = (query.page as number) || 1;
       const perPage: number = (query.perPage as number) || 7;
       const skip = (page - 1) * perPage;
@@ -76,9 +78,7 @@ export class CategoriesService extends CategoriesRepository {
       if (query.search) {
         const searchRegex = new RegExp(query.search as string, "i");
         queryObj = {
-          $or: [
-            { name: searchRegex },
-          ],
+          $or: [{ name: searchRegex }],
         };
       }
 
@@ -93,7 +93,13 @@ export class CategoriesService extends CategoriesRepository {
       }
 
       // do query
-      const categories = await this.paginate(queryObj, skip, perPage, query.sortBy, query.order);
+      const categories = await this.paginate(
+        queryObj,
+        skip,
+        perPage,
+        query.sortBy,
+        query.order
+      );
 
       // return data
       return ResponseHandler.successResponse(
@@ -105,7 +111,6 @@ export class CategoriesService extends CategoriesRepository {
         },
         "Listado de categorías."
       );
-
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -131,7 +136,6 @@ export class CategoriesService extends CategoriesRepository {
         category,
         "Información de la categoría."
       );
-
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -157,7 +161,6 @@ export class CategoriesService extends CategoriesRepository {
         category,
         "Categoría eliminada correctamente."
       );
-
     } catch (error: any) {
       throw new Error(error.message);
     }
@@ -178,21 +181,25 @@ export class CategoriesService extends CategoriesRepository {
   ) {
     try {
       // validate file
-      const category = await this.update(id, body) as CategoriesInterface;
+      const category = (await this.update(id, body)) as CategoriesInterface;
 
       // set file
       if (file) {
         // delete old icon
         if (category.icon) {
-          await this.cloudinaryService.deleteImageByUrl(category.icon);
+          await this.queue.addJob(
+            { taskType: 'deleteFile', payload: { icon: category.icon } },
+            {
+              attempts: 3,
+              backoff: 5000,
+            }
+          );
         }
-        const imgBuffer = await this.utils.generateBuffer(file.path);
-        const fileResponse = await this.cloudinaryService.uploadImage(imgBuffer, this.folder);
-
-        // save new icon
-        category.icon = fileResponse.secure_url;
-        await this.utils.deleteItemFromStorage(`${this.path}${file ? file.filename : ""}`);
-        await this.update(category._id, category);
+        // upload file icon
+        await this.queue.addJob(
+          { taskType: "uploadFile", payload: { file, entity: category } },
+          { attempts: 3, backoff: 5000 }
+        );
       }
 
       // return response
@@ -213,10 +220,7 @@ export class CategoriesService extends CategoriesRepository {
    * @param { CategoriesInterface } body CategoriesInterface
    * @param { Express.Multer.File } file Express.Multer.File
    */
-  public async changeCategoryStatus(
-    res: Response,
-    id: string
-  ) {
+  public async changeCategoryStatus(res: Response, id: string) {
     try {
       // validate file
       const category = await this.findOneByQuery({ _id: id });

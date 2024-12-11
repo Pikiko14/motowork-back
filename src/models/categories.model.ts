@@ -4,6 +4,7 @@ import {
   TypeCategory,
 } from "../types/categories.interface";
 import { Utils } from "../utils/utils";
+import { TaskQueue } from '../queues/cloudinary.queue';
 import { CloudinaryService } from "../services/cloudinary.service";
 
 const utils = new Utils();
@@ -65,7 +66,14 @@ CategoriesSchema.pre(
       .exec();
     try {
       if (category.icon) {
-        await cloudinaryService.deleteImageByUrl(category.icon);
+        const queue = new TaskQueue("cloudinary_base_microservice", 'categories', '/categories/');
+        await queue.addJob(
+          { taskType: 'deleteFile', payload: { icon: category.icon } },
+          {
+            attempts: 3,
+            backoff: 5000,
+          }
+        );
       }
       next();
     } catch (error) {

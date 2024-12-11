@@ -211,7 +211,7 @@ export class BannersService extends BannersRepository {
       const banner = await this.getById(id);
 
       // get preview images
-      const images: BannerImageInterface[] = banner?.images || [];
+      const images: BannerImageInterface[] = JSON.parse(JSON.stringify(banner?.images)) || [];
 
       // validate files and process
       const { imagesTablet, imagesDesktop, imagesMobile } = files;
@@ -224,6 +224,7 @@ export class BannersService extends BannersRepository {
             return item.type === TypeImageBanner.desktop;
           }
         );
+
         const previewImageDesktopIndex = images.findIndex(
           (item: BannerImageInterface) => {
             return item.type === TypeImageBanner.desktop;
@@ -234,9 +235,11 @@ export class BannersService extends BannersRepository {
         if (previewImageDesktopIndex !== -1)
           images.splice(previewImageDesktopIndex, 1);
 
-        // delete item from storage
-        if (previewImageDesktop)
-          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+        // delete desktop image
+        await this.queue.addJob(
+          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          { attempts: 3, backoff: 5000 }
+        );
 
         // set images desktop
         images.push({
@@ -244,6 +247,7 @@ export class BannersService extends BannersRepository {
             imagesDesktop[0] ? imagesDesktop[0].filename : ""
           }`,
           type: TypeImageBanner.desktop,
+          src: imagesDesktop[0] ? imagesDesktop[0].path : "",
         });
       }
 
@@ -263,11 +267,13 @@ export class BannersService extends BannersRepository {
 
         // delete preview data
         if (previewImageDesktopIndex !== -1)
-          images.splice(previewImageDesktopIndex, 1);
+          images.splice(previewImageDesktopIndex, 1); 
 
-        // delete item from storage
-        if (previewImageDesktop)
-          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+        // delete desktop image
+        await this.queue.addJob(
+          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          { attempts: 3, backoff: 5000 }
+        );
 
         // set images desktop
         images.push({
@@ -275,6 +281,7 @@ export class BannersService extends BannersRepository {
             imagesTablet[0] ? imagesTablet[0].filename : ""
           }`,
           type: TypeImageBanner.tablet,
+          src: imagesDesktop[0] ? imagesDesktop[0].path : "",
         });
       }
 
@@ -296,9 +303,11 @@ export class BannersService extends BannersRepository {
         if (previewImageDesktopIndex !== -1)
           images.splice(previewImageDesktopIndex, 1);
 
-        // delete item from storage
-        if (previewImageDesktop)
-          await this.utils.deleteItemFromStorage(previewImageDesktop.path);
+        // delete desktop image
+        await this.queue.addJob(
+          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          { attempts: 3, backoff: 5000 }
+        );
 
         // set images desktop
         images.push({
@@ -306,6 +315,7 @@ export class BannersService extends BannersRepository {
             imagesMobile[0] ? imagesMobile[0].filename : ""
           }`,
           type: TypeImageBanner.mobile,
+          src: imagesDesktop[0] ? imagesDesktop[0].path : "",
         });
       }
 
@@ -317,6 +327,12 @@ export class BannersService extends BannersRepository {
 
       // save data
       const bannerData = await this.update(id, body);
+
+      // upload images to cloudinary
+      await this.queue.addJob(
+        { taskType: "uploadMultipleFiles", payload: { entity: banner, images } },
+        { attempts: 3, backoff: 5000 }
+      );
 
       // return response
       return ResponseHandler.successResponse(

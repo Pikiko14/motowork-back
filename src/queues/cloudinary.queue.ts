@@ -69,19 +69,23 @@ export class TaskQueue<T> {
       const { entity, images } = job.data.payload;
       const newImages = [];
       for (const image of images) {
-        const imgBuffer = await this.utils.generateBuffer(image.src);
-        // delete local storage
-        await this.utils.deleteItemFromStorage(
-          `${image.path ? image.path : ""}`
-        );
+        if (image.src) {
+          const imgBuffer = await this.utils.generateBuffer(image.src);
+          // delete local storage
+          await this.utils.deleteItemFromStorage(
+            `${image.path ? image.path : ""}`
+          );
 
-        // upload single
-        fileResponse = await this.cloudinaryService.uploadImage(
-          imgBuffer,
-          this.folder
-        );
-        image.path = fileResponse.secure_url;
-        newImages.push(image);
+          // upload single
+          fileResponse = await this.cloudinaryService.uploadImage(
+            imgBuffer,
+            this.folder
+          );
+          image.path = fileResponse.secure_url;
+          newImages.push(image);
+        } else {
+          newImages.push(image);
+        }
       }
       entity.images = newImages;
       entityBd = entity;

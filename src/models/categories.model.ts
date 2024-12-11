@@ -3,12 +3,7 @@ import {
   CategoriesInterface,
   TypeCategory,
 } from "../types/categories.interface";
-import { Utils } from "../utils/utils";
 import { TaskQueue } from '../queues/cloudinary.queue';
-import { CloudinaryService } from "../services/cloudinary.service";
-
-const utils = new Utils();
-const cloudinaryService = new CloudinaryService();
 
 const CategoriesSchema = new Schema<CategoriesInterface>(
   {

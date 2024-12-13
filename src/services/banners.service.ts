@@ -256,7 +256,7 @@ export class BannersService extends BannersRepository {
         await this.queue.addJob(
           {
             taskType: "deleteFile",
-            payload: { icon: previewImageDesktop?.path },
+            payload: { icon: previewImageDesktop?.path, folder: this.folder },
           },
           { attempts: 3, backoff: 5000 }
         );
@@ -293,7 +293,7 @@ export class BannersService extends BannersRepository {
         await this.queue.addJob(
           {
             taskType: "deleteFile",
-            payload: { icon: previewImageDesktop?.path },
+            payload: { icon: previewImageDesktop?.path, folder: this.folder },
           },
           { attempts: 3, backoff: 5000 }
         );
@@ -330,7 +330,7 @@ export class BannersService extends BannersRepository {
         await this.queue.addJob(
           {
             taskType: "deleteFile",
-            payload: { icon: previewImageDesktop?.path },
+            payload: { icon: previewImageDesktop?.path, folder: this.folder },
           },
           { attempts: 3, backoff: 5000 }
         );
@@ -362,7 +362,7 @@ export class BannersService extends BannersRepository {
       await this.queue.addJob(
         {
           taskType: "uploadMultipleFiles",
-          payload: { entity: banner, images },
+          payload: { entity: banner, images, folder: this.folder, path: this.path },
         },
         { attempts: 3, backoff: 5000 }
       );

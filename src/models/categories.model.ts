@@ -5,6 +5,9 @@ import {
 } from "../types/categories.interface";
 import { TaskQueue } from '../queues/cloudinary.queue';
 
+const folder = 'categories';
+const path = '/categories/';
+
 const CategoriesSchema = new Schema<CategoriesInterface>(
   {
     name: {
@@ -61,9 +64,9 @@ CategoriesSchema.pre(
       .exec();
     try {
       if (category.icon) {
-        const queue = new TaskQueue("cloudinary_base_microservice", 'categories', '/categories/');
+        const queue = new TaskQueue("cloudinary_base_microservice");
         await queue.addJob(
-          { taskType: 'deleteFile', payload: { icon: category.icon } },
+          { taskType: 'deleteFile', payload: { icon: category.icon, folder, path } },
           {
             attempts: 3,
             backoff: 5000,

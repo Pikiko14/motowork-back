@@ -6,21 +6,17 @@ import CategoriesRepository from "../repositories/categories.repository";
 
 export class TaskQueue<T> {
   private utils: Utils;
-  private path: string;
   private queue: Queue<T>;
-  public folder: string;
   public redisConfig: QueueOptions["redis"] = {
     host: "127.0.0.1",
     port: 6379,
   };
   public cloudinaryService: CloudinaryService;
 
-  constructor(queueName: string, folder: string, path: string) {
+  constructor(queueName: string) {
     this.queue = new Bull<T>(queueName, {
       redis: this.redisConfig,
     });
-    this.path = path;
-    this.folder = folder;
     this.utils = new Utils();
     this.initializeProcessor();
     this.cloudinaryService = new CloudinaryService();
@@ -50,23 +46,26 @@ export class TaskQueue<T> {
     let entityBd = null;
 
     // upload single file
+    let folderString = '';
     if (job.data.taskType === "uploadFile") {
-      const { file, entity } = job.data.payload;
+      const { file, entity, folder, path } = job.data.payload;
+      folderString = folder;
       const imgBuffer = await this.utils.generateBuffer(file.path);
       fileResponse = await this.cloudinaryService.uploadImage(
         imgBuffer,
-        this.folder
+        folder
       );
       entity.icon = fileResponse.secure_url;
       await this.utils.deleteItemFromStorage(
-        `${this.path}${file ? file.filename : ""}`
+        `${path}${file ? file.filename : ""}`
       );
       entityBd = entity;
     }
 
     // upload multiple files
     if (job.data.taskType === "uploadMultipleFiles") {
-      const { entity, images } = job.data.payload;
+      const { entity, images, folder } = job.data.payload;
+      folderString = folder;
       const newImages = [];
       for (const image of images) {
         if (image.src) {
@@ -79,7 +78,7 @@ export class TaskQueue<T> {
           // upload single
           fileResponse = await this.cloudinaryService.uploadImage(
             imgBuffer,
-            this.folder
+            folder
           );
           image.path = fileResponse.secure_url;
           newImages.push(image);
@@ -96,14 +95,15 @@ export class TaskQueue<T> {
 
     // delete file
     if (job.data.taskType === "deleteFile") {
-      const { icon } = job.data.payload;
+      const { icon, folder } = job.data.payload;
+      folderString = folder;
       fileResponse = await this.cloudinaryService.deleteImageByUrl(icon);
     }
 
     // save items in bbdd
     if (entityBd) {
       // save result in our bbdd
-      switch (this.folder) {
+      switch (folderString) {
         case "categories":
           repository = new CategoriesRepository();
           break;

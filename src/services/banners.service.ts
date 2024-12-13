@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { Utils } from "../utils/utils";
 import { ResponseHandler } from "../utils/responseHandler";
 import {
   BannerImageInterface,
@@ -12,15 +11,14 @@ import { ResponseRequestInterface } from "../types/response.interface";
 import { PaginationInterface } from "../types/req-ext.interface";
 
 export class BannersService extends BannersRepository {
-  private utils: Utils;
   public path: string;
   public queue: any;
+  public folder = "banners";
 
   constructor() {
     super();
     this.path = "/banners/";
-    this.utils = new Utils();
-    this.queue = new TaskQueue("cloudinary_base_microservice", "banners", this.path);
+    this.queue = new TaskQueue("cloudinary_base_microservice");
   }
 
   /**
@@ -73,7 +71,11 @@ export class BannersService extends BannersRepository {
       });
 
       // validate if exist one banner active and desactivate by type
-      if (body.is_active && body?.is_active === true || body?.is_active === "true") await this.disableIsActive(body.type);
+      if (
+        (body.is_active && body?.is_active === true) ||
+        body?.is_active === "true"
+      )
+        await this.disableIsActive(body.type);
 
       // save images on banner
       body.images = images;
@@ -83,7 +85,15 @@ export class BannersService extends BannersRepository {
 
       // upload images to cloudinary
       await this.queue.addJob(
-        { taskType: "uploadMultipleFiles", payload: { entity: banner, images } },
+        {
+          taskType: "uploadMultipleFiles",
+          payload: {
+            entity: banner,
+            images,
+            folder: this.folder,
+            path: this.path,
+          },
+        },
         { attempts: 3, backoff: 5000 }
       );
 
@@ -153,7 +163,10 @@ export class BannersService extends BannersRepository {
    * @param { string } id
    * @returns Promise<void>
    */
-  public async showBanner(res: Response, id: string): Promise<void | ResponseRequestInterface> {
+  public async showBanner(
+    res: Response,
+    id: string
+  ): Promise<void | ResponseRequestInterface> {
     try {
       const banner = await this.getById(id);
 
@@ -166,7 +179,7 @@ export class BannersService extends BannersRepository {
     } catch (error: any) {
       throw new Error(error.message);
     }
-  };
+  }
 
   /**
    * Delete banner
@@ -174,7 +187,10 @@ export class BannersService extends BannersRepository {
    * @param { string } id
    * @returns Promise<void>
    */
-  public async deleteBanner(res: Response, id: string): Promise<void | ResponseRequestInterface> {
+  public async deleteBanner(
+    res: Response,
+    id: string
+  ): Promise<void | ResponseRequestInterface> {
     try {
       const banner = await this.delete(id);
 
@@ -187,7 +203,7 @@ export class BannersService extends BannersRepository {
     } catch (error: any) {
       throw new Error(error.message);
     }
-  };
+  }
 
   /**
    * Update banner
@@ -211,7 +227,8 @@ export class BannersService extends BannersRepository {
       const banner = await this.getById(id);
 
       // get preview images
-      const images: BannerImageInterface[] = JSON.parse(JSON.stringify(banner?.images)) || [];
+      const images: BannerImageInterface[] =
+        JSON.parse(JSON.stringify(banner?.images)) || [];
 
       // validate files and process
       const { imagesTablet, imagesDesktop, imagesMobile } = files;
@@ -237,7 +254,10 @@ export class BannersService extends BannersRepository {
 
         // delete desktop image
         await this.queue.addJob(
-          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          {
+            taskType: "deleteFile",
+            payload: { icon: previewImageDesktop?.path },
+          },
           { attempts: 3, backoff: 5000 }
         );
 
@@ -267,11 +287,14 @@ export class BannersService extends BannersRepository {
 
         // delete preview data
         if (previewImageDesktopIndex !== -1)
-          images.splice(previewImageDesktopIndex, 1); 
+          images.splice(previewImageDesktopIndex, 1);
 
         // delete desktop image
         await this.queue.addJob(
-          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          {
+            taskType: "deleteFile",
+            payload: { icon: previewImageDesktop?.path },
+          },
           { attempts: 3, backoff: 5000 }
         );
 
@@ -305,7 +328,10 @@ export class BannersService extends BannersRepository {
 
         // delete desktop image
         await this.queue.addJob(
-          { taskType: "deleteFile", payload: { icon: previewImageDesktop?.path } },
+          {
+            taskType: "deleteFile",
+            payload: { icon: previewImageDesktop?.path },
+          },
           { attempts: 3, backoff: 5000 }
         );
 
@@ -320,7 +346,11 @@ export class BannersService extends BannersRepository {
       }
 
       // validate if exist one banner active and desactivate by type
-      if (body.is_active && body.is_active === 'true' || body.is_active === "true") await this.disableIsActive(body.type);
+      if (
+        (body.is_active && body.is_active === "true") ||
+        body.is_active === "true"
+      )
+        await this.disableIsActive(body.type);
 
       // set images
       body.images = images;
@@ -330,7 +360,10 @@ export class BannersService extends BannersRepository {
 
       // upload images to cloudinary
       await this.queue.addJob(
-        { taskType: "uploadMultipleFiles", payload: { entity: banner, images } },
+        {
+          taskType: "uploadMultipleFiles",
+          payload: { entity: banner, images },
+        },
         { attempts: 3, backoff: 5000 }
       );
 
@@ -343,7 +376,7 @@ export class BannersService extends BannersRepository {
     } catch (error: any) {
       throw new Error(error.message);
     }
-  };
+  }
 
   /**
    * Disable is_active

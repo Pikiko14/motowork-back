@@ -10,11 +10,12 @@ export class CategoriesService extends CategoriesRepository {
   public path: string;
   public queue: any;
   public cloudinaryService: CloudinaryService;
+  public folder = "categories";
 
   constructor() {
     super();
     this.path = "/categories/";
-    this.queue = new TaskQueue("cloudinary_base_microservice", 'categories', this.path);
+    this.queue = new TaskQueue("cloudinary_base_microservice");
     this.cloudinaryService = new CloudinaryService();
   }
 
@@ -37,7 +38,7 @@ export class CategoriesService extends CategoriesRepository {
       if (file) {
         // await this.update(category._id, category);
         await this.queue.addJob(
-          { taskType: "uploadFile", payload: { file, entity: category } },
+          { taskType: "uploadFile", payload: { file, entity: category, folder: this.folder, path: this.path } },
           { attempts: 3, backoff: 5000 }
         );
       }
@@ -184,7 +185,7 @@ export class CategoriesService extends CategoriesRepository {
         // delete old icon
         if (category.icon) {
           await this.queue.addJob(
-            { taskType: 'deleteFile', payload: { icon: category.icon } },
+            { taskType: 'deleteFile', payload: { icon: category.icon, folder: this.folder } },
             {
               attempts: 3,
               backoff: 5000,
@@ -193,7 +194,7 @@ export class CategoriesService extends CategoriesRepository {
         }
         // upload file icon
         await this.queue.addJob(
-          { taskType: "uploadFile", payload: { file, entity: category } },
+          { taskType: "uploadFile", payload: { file, entity: category, folder: this.folder, path: this.path } },
           { attempts: 3, backoff: 5000 }
         );
       }

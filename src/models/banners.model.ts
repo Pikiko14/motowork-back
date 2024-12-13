@@ -5,10 +5,10 @@ import {
   BannersInterface,
   TypeImageBanner,
 } from "../types/banners.interface";
-import { Utils } from "../utils/utils";
 import { TaskQueue } from '../queues/cloudinary.queue';
 
-const utils = new Utils();
+const folder = "banners";
+const path = "/banners/";
 
 const BannerImageSchema = new Schema<BannerImageInterface>({
   path: {
@@ -62,9 +62,9 @@ BannersSchema.pre(
       .exec();
     try {
       for (const image of banner.images) {
-        const queue = new TaskQueue("cloudinary_base_microservice", 'banners', '/banners/');
+        const queue = new TaskQueue("cloudinary_base_microservice");
         await queue.addJob(
-          { taskType: 'deleteFile', payload: { icon: image.path } },
+          { taskType: 'deleteFile', payload: { icon: image.path, folder, path } },
           {
             attempts: 3,
             backoff: 5000,

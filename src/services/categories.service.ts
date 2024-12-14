@@ -90,12 +90,14 @@ export class CategoriesService extends CategoriesRepository {
       }
 
       // do query
+      const fields = query.fields ? query.fields.split(',') : [];
       const categories = await this.paginate(
         queryObj,
         skip,
         perPage,
         query.sortBy,
-        query.order
+        query.order,
+        fields
       );
 
       // return data

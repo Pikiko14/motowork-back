@@ -129,4 +129,21 @@ export class BannersController {
       ResponseHandler.handleInternalError(res, error, error.message);
     }
   };
+
+  /**
+   * List banners by type
+   * @param { Request } req Express request
+   * @param { Response } res Express response
+   * @returns Promise<void>
+   */
+  filterBanner = async (req: Request, res: Response) => {
+    try {
+      const query: PaginationInterface = matchedData(
+        req
+      ) as PaginationInterface;
+      await this.service.filterBanner(res, query);
+    } catch (error: any) {
+      ResponseHandler.handleInternalError(res, error, error.message);
+    }
+  }
 }

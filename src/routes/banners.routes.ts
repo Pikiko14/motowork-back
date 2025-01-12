@@ -79,5 +79,14 @@ router.put(
   controller.updateBanner
 );
 
+/**
+ * Get banner
+ */
+router.get(
+  "/list/from-web",
+  PaginationValidator,
+  controller.filterBanner
+);
+
 // export router
 export { router };

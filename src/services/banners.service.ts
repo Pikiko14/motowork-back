@@ -393,4 +393,24 @@ export class BannersService extends BannersRepository {
       throw new Error(error.message);
     }
   }
+
+  /**
+   * Filter banner
+   * @param { Response } res Express response
+   * @param { PaginationInterface } query
+   */
+  public async filterBanner(res: Response, query: PaginationInterface): Promise<void> {
+    try {
+      const banner = await this.findOneByQuery({ type: query.type });
+
+      // return response
+      return ResponseHandler.successResponse(
+        res,
+        banner,
+        "Banner data."
+      );
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
 }

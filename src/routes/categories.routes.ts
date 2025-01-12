@@ -81,5 +81,14 @@ router.put(
   controller.changeCategoryStatus
 );
 
+/**
+ * Get categories
+ */
+router.get(
+  "/list/from-web",
+  PaginationValidator,
+  controller.getCategories
+);
+
 // export router
 export { router };

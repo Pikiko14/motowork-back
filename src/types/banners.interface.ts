@@ -5,7 +5,7 @@ export enum TypeBanner {
   experencie = "experience",
   us = "us",
   accesories = "accesories",
-  product = "vehicles",
+  vehicles = "vehicles",
 }
 
 export enum TypeImageBanner {

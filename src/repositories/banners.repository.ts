@@ -65,7 +65,6 @@ class BannersRepository {
     id: string,
     body: BannersInterface
   ): Promise<BannersInterface | void | null> {
-    console.log(123);
     return await this.model.findByIdAndUpdate(id, body, { new: true });
   }
 

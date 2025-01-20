@@ -348,9 +348,15 @@ export class BannersService extends BannersRepository {
       // validate if exist one banner active and desactivate by type
       if (
         (body.is_active && body.is_active === "true") ||
-        body.is_active === "true"
+        body.is_active === true
       )
         await this.disableIsActive(body.type);
+
+      if (
+        body.is_active === true
+      ) {
+        body.is_active = true;
+      }
 
       // set images
       body.images = images;
@@ -362,7 +368,7 @@ export class BannersService extends BannersRepository {
       await this.queue.addJob(
         {
           taskType: "uploadMultipleFiles",
-          payload: { entity: banner, images, folder: this.folder, path: this.path },
+          payload: { entity: bannerData, images, folder: this.folder, path: this.path },
         },
         { attempts: 3, backoff: 5000 }
       );
@@ -401,7 +407,7 @@ export class BannersService extends BannersRepository {
    */
   public async filterBanner(res: Response, query: PaginationInterface): Promise<void> {
     try {
-      const banner = await this.findOneByQuery({ type: query.type });
+      const banner = await this.findOneByQuery({ type: query.type, is_active: true });
 
       // return response
       return ResponseHandler.successResponse(

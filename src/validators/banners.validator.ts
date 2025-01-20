@@ -35,17 +35,7 @@ const BannersCreationValidator = [
     .isLength({ min: 5, max: 160 })
     .withMessage(
       "El link del banner debe tener entre 5 y máximo 160 caracteres."
-    )
-    .custom(async (value: string) => {
-      const isValidValue =
-        /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9#]+\/?)*$/.test(
-          value
-        );
-      if (!isValidValue) {
-        throw new Error("El link del banner debe ser una url válida.");
-      }
-      return true;
-    }),
+    ),
   check("type")
     .exists()
     .withMessage("El tipo del banner es requerido.")

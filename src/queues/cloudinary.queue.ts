@@ -1,4 +1,5 @@
 import { Utils } from "../utils/utils";
+import configuration from "../../configuration/configuration";
 import Bull, { Job, Queue, QueueOptions } from "bull";
 import { CloudinaryService } from "../services/cloudinary.service";
 import BannersRepository from "../repositories/banners.repository";
@@ -8,8 +9,11 @@ export class TaskQueue<T> {
   private utils: Utils;
   private queue: Queue<T>;
   public redisConfig: QueueOptions["redis"] = {
-    host: "127.0.0.1",
-    port: 6379,
+    // host: "viaduct.proxy.rlwy.net",
+    // port: 39507,
+    host: configuration.get('REDIS_HOST') || '127.0.0.1',
+    port: parseInt(configuration.get('REDIS_PORT')) || 6379,
+    password: configuration.get('REDIS_PASSWORD') || ''
   };
   public cloudinaryService: CloudinaryService;
 
@@ -46,7 +50,7 @@ export class TaskQueue<T> {
     let entityBd = null;
 
     // upload single file
-    let folderString = '';
+    let folderString = "";
     if (job.data.taskType === "uploadFile") {
       const { file, entity, folder, path } = job.data.payload;
       folderString = folder;
@@ -107,8 +111,8 @@ export class TaskQueue<T> {
         case "categories":
           repository = new CategoriesRepository();
           break;
-        
-        case 'banners':
+
+        case "banners":
           repository = new BannersRepository();
           break;
       }

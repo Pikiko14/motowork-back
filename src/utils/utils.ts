@@ -122,6 +122,7 @@ class Utils {
     const directory = `${this.path}/${path}`;
     const isDirectoryExist = await fs.existsSync(directory);
     if (!isDirectoryExist) {
+      console.log(this.path);
       fs.mkdirSync(directory);
     }
   };

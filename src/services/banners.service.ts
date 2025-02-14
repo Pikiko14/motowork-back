@@ -6,9 +6,10 @@ import {
   TypeImageBanner,
 } from "../types/banners.interface";
 import { TaskQueue } from "../queues/cloudinary.queue";
+import { RedisImplement } from "./cache/redis.services";
+import { PaginationInterface } from "../types/req-ext.interface";
 import BannersRepository from "../repositories/banners.repository";
 import { ResponseRequestInterface } from "../types/response.interface";
-import { PaginationInterface } from "../types/req-ext.interface";
 
 export class BannersService extends BannersRepository {
   public path: string;
@@ -97,6 +98,9 @@ export class BannersService extends BannersRepository {
         { attempts: 3, backoff: 5000 }
       );
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return response
       return ResponseHandler.createdResponse(
         res,
@@ -116,6 +120,18 @@ export class BannersService extends BannersRepository {
    */
   public async listBanners(res: Response, query: PaginationInterface) {
     try {
+      // validate in cache
+      const redisCache = RedisImplement.getInstance();
+      const cacheKey = `banners:${JSON.stringify(query)}`;
+      const cachedData = await redisCache.getItem(cacheKey);
+      if (cachedData) {
+        return ResponseHandler.successResponse(
+          res,
+          cachedData,
+          "Listado de banners (desde caché)."
+        );
+      }
+
       // validamos la data de la paginacion
       const page: number = (query.page as number) || 1;
       const perPage: number = (query.perPage as number) || 12;
@@ -141,6 +157,17 @@ export class BannersService extends BannersRepository {
 
       // do query
       const banners = await this.paginate(queryObj, skip, perPage);
+
+      // Guardar la respuesta en Redis por 10 minutos
+      await redisCache.setItem(
+        cacheKey,
+        {
+          banners: banners.data,
+          totalItems: banners.totalItems,
+          totalPages: banners.totalPages,
+        },
+        600
+      );
 
       // return data
       return ResponseHandler.successResponse(
@@ -168,6 +195,7 @@ export class BannersService extends BannersRepository {
     id: string
   ): Promise<void | ResponseRequestInterface> {
     try {
+      // get banner in bbdd
       const banner = await this.getById(id);
 
       // return response
@@ -193,6 +221,9 @@ export class BannersService extends BannersRepository {
   ): Promise<void | ResponseRequestInterface> {
     try {
       const banner = await this.delete(id);
+
+      // clear cache
+      await this.clearCacheInstances()
 
       // return response
       return ResponseHandler.successResponse(
@@ -373,6 +404,9 @@ export class BannersService extends BannersRepository {
         { attempts: 3, backoff: 5000 }
       );
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return response
       return ResponseHandler.successResponse(
         res,
@@ -407,7 +441,29 @@ export class BannersService extends BannersRepository {
    */
   public async filterBanner(res: Response, query: PaginationInterface): Promise<void> {
     try {
+      // validate in cache
+      const redisCache = RedisImplement.getInstance();
+      const cacheKey = `banners:${JSON.stringify(query)}`;
+      const cachedData = await redisCache.getItem(cacheKey);
+      if (cachedData) {
+        return ResponseHandler.successResponse(
+          res,
+          {
+            ...cachedData
+          },
+          "Banner data (desde caché)."
+        );
+      }
+
+      // get banner in bbdd
       const banner = await this.findOneByQuery({ type: query.type, is_active: true });
+
+      // Guardar la respuesta en Redis por 10 minutos
+      await redisCache.setItem(
+        cacheKey,
+        banner,
+        600
+      );
 
       // return response
       return ResponseHandler.successResponse(
@@ -417,6 +473,16 @@ export class BannersService extends BannersRepository {
       );
     } catch (error: any) {
       throw new Error(error.message);
+    }
+  }
+
+  // clear cache instances
+  public async clearCacheInstances() {
+    const redisCache = RedisImplement.getInstance();
+    const keys = await redisCache.getKeys("banners:*");
+    if (keys.length > 0) {
+      await redisCache.deleteKeys(keys);
+      console.log(`🗑️ Cache limpiado`);
     }
   }
 }

@@ -482,7 +482,7 @@ export class BannersService extends BannersRepository {
     const keys = await redisCache.getKeys("banners:*");
     if (keys.length > 0) {
       await redisCache.deleteKeys(keys);
-      console.log(`🗑️ Cache limpiado`);
+      console.log(`🗑️ Cache de banners limpiado`);
     }
   }
 }

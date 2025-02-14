@@ -1,5 +1,6 @@
 import { Response } from "express";
 import { TaskQueue } from "../queues/cloudinary.queue";
+import { RedisImplement } from "./cache/redis.services";
 import { CloudinaryService } from "./cloudinary.service";
 import { ResponseHandler } from "../utils/responseHandler";
 import { PaginationInterface } from "../types/req-ext.interface";
@@ -43,6 +44,9 @@ export class CategoriesService extends CategoriesRepository {
         );
       }
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return response
       return ResponseHandler.successResponse(
         res,
@@ -65,6 +69,18 @@ export class CategoriesService extends CategoriesRepository {
     query: PaginationInterface
   ): Promise<void | ResponseHandler> {
     try {
+      // validate in cache
+      const redisCache = RedisImplement.getInstance();
+      const cacheKey = `categories:${JSON.stringify(query)}`;
+      const cachedData = await redisCache.getItem(cacheKey);
+      if (cachedData) {
+        return ResponseHandler.successResponse(
+          res,
+          cachedData,
+          "Listado de categorías (desde caché)."
+        );
+      }
+
       // validamos la data de la paginacion
       const page: number = (query.page as number) || 1;
       const perPage: number = (query.perPage as number) || 7;
@@ -98,6 +114,17 @@ export class CategoriesService extends CategoriesRepository {
         query.sortBy,
         query.order,
         fields
+      );
+
+      // Guardar la respuesta en Redis por 10 minutos
+      await redisCache.setItem(
+        cacheKey,
+        {
+          categories: categories.data,
+          totalItems: categories.totalItems,
+          totalPages: categories.totalPages,
+        },
+        600
       );
 
       // return data
@@ -154,6 +181,9 @@ export class CategoriesService extends CategoriesRepository {
       // get category
       const category = await this.delete(id);
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return data
       return ResponseHandler.successResponse(
         res,
@@ -201,6 +231,9 @@ export class CategoriesService extends CategoriesRepository {
         );
       }
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return response
       return ResponseHandler.successResponse(
         res,
@@ -230,6 +263,9 @@ export class CategoriesService extends CategoriesRepository {
         await this.update(category._id, category);
       }
 
+      // clear cache
+      await this.clearCacheInstances();
+
       // return response
       return ResponseHandler.successResponse(
         res,
@@ -238,6 +274,16 @@ export class CategoriesService extends CategoriesRepository {
       );
     } catch (error: any) {
       throw new Error(error.message);
+    }
+  }
+
+  // clear cache instances
+  public async clearCacheInstances() {
+    const redisCache = RedisImplement.getInstance();
+    const keys = await redisCache.getKeys("categories:*");
+    if (keys.length > 0) {
+      await redisCache.deleteKeys(keys);
+      console.log(`🗑️ Cache de categorías limpiado`);
     }
   }
 }

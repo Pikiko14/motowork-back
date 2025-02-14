@@ -15,4 +15,10 @@ export const scopesArray = [
   "list-brand",
   "update-brand",
   "delete-brand",
+  "create-blog",
+  "list-blog",
+  "update-blog",
+  "delete-blog",
+  "list-orders",
+  "update-orders"
 ];
